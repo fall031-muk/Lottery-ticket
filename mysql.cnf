@@ -1,0 +1,5 @@
+[client]
+database = lottos
+user = muk
+password = 1234
+default-character-set = utf8
