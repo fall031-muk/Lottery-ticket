@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-u#+ydjt0m4g=-9m%@)v09%2la^qmo6rtibnr2^gs7@n3c#)6!3'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -78,21 +78,13 @@ WSGI_APPLICATION = 'muk_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-# 기존 MySQL 설정을 주석 처리하고 SQLite 설정을 추가
-# pymysql.install_as_MySQLdb()
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'OPTIONS': {
-#             'read_default_file': "path/to/mysql.cnf",
-#         }
-#     }
-# }
-
+pymysql.install_as_MySQLdb()
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'OPTIONS': {
+            'read_default_file': "path/to/mysql.cnf",
+        }
     }
 }
 
