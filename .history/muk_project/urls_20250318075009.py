@@ -16,16 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.urls.conf import include
-from django.conf import settings
-from django.conf.urls.static import static
-from lotto.api.views import LottoMainView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('lottery/', include('lotto.urls')),
-    path('', LottoMainView.as_view(), name='home'),  # 루트 URL에 로또 앱 추가
 ]
-
-# 정적 파일 서빙 설정 추가
-if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
