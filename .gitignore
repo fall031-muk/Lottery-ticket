@@ -1,0 +1,50 @@
+# 히스토리 폴더 제외
+.history/
+.history/**
+
+# Python 관련 파일 제외
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Django 관련 파일 제외
+*.log
+local_settings.py
+
+# 데이터베이스 파일 제외
+# db.sqlite3  # 주석 처리: 필요에 따라 데이터베이스 파일도 제외 가능
+
+# 운영체제 관련 파일 제외
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE 관련 파일 제외
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 정적 파일 모음 폴더 제외 (필요에 따라)
+# staticfiles/  # 주석 처리: 필요에 따라 정적 파일 모음 폴더도 제외 가능 
