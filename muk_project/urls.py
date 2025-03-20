@@ -18,12 +18,14 @@ from django.urls import path
 from django.urls.conf import include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.generic import TemplateView
 from lotto.api.views import LottoMainView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('lottery/', include('lotto.urls')),
     path('', LottoMainView.as_view(), name='home'),  # 루트 URL에 로또 앱 추가
+    path('ads.txt', TemplateView.as_view(template_name="ads.txt", content_type="text/plain")),  # ads.txt 파일 제공
 ]
 
 # 정적 파일 서빙 설정 추가
