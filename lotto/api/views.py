@@ -157,34 +157,34 @@ class GetDrawInfo(APIView):
             error_msg = str(e)
             print(f"당첨 정보 가져오기 오류: {error_msg}")
             
-            # PythonAnywhere 프록시 오류인 경우 대체 데이터 제공
-            if "ProxyError" in error_msg or "Max retries exceeded" in error_msg:
-                # 대체 데이터: 회차에 따라 고정된 번호 생성
-                # 실제로는 완전히 랜덤하지 않지만, 회차별로 다른 결과 제공
-                seed_value = int(draw_no) % 10000  # 회차를 시드값으로 사용
-                random.seed(seed_value)
+            # # PythonAnywhere 프록시 오류인 경우 대체 데이터 제공
+            # if "ProxyError" in error_msg or "Max retries exceeded" in error_msg:
+            #     # 대체 데이터: 회차에 따라 고정된 번호 생성
+            #     # 실제로는 완전히 랜덤하지 않지만, 회차별로 다른 결과 제공
+            #     seed_value = int(draw_no) % 10000  # 회차를 시드값으로 사용
+            #     random.seed(seed_value)
                 
-                # 회차별로 일관된 번호 생성
-                numbers = sorted(random.sample(range(1, 46), 7))
+            #     # 회차별로 일관된 번호 생성
+            #     numbers = sorted(random.sample(range(1, 46), 7))
                 
-                # 동행복권 API 형식과 유사하게 응답 구성
-                fallback_data = {
-                    "returnValue": "success",
-                    "drwNoDate": f"2023-{((int(draw_no) % 12) + 1):02d}-{((int(draw_no) % 28) + 1):02d}",  # 임의의 날짜
-                    "drwNo": int(draw_no),
-                    "drwtNo1": numbers[0],
-                    "drwtNo2": numbers[1],
-                    "drwtNo3": numbers[2],
-                    "drwtNo4": numbers[3],
-                    "drwtNo5": numbers[4],
-                    "drwtNo6": numbers[5],
-                    "bnusNo": numbers[6],
-                    "firstWinamnt": 1500000000,  # 임의의 상금
-                    "firstPrzwnerCo": 8,  # 임의의 당첨자 수
-                    "firstAccumamnt": 12000000000,  # 임의의 누적 상금
-                    "totSellamnt": 85000000000  # 임의의 총 판매금액
-                }
-                return Response(fallback_data, status=status.HTTP_200_OK)
+            #     # 동행복권 API 형식과 유사하게 응답 구성
+            #     fallback_data = {
+            #         "returnValue": "success",
+            #         "drwNoDate": f"2023-{((int(draw_no) % 12) + 1):02d}-{((int(draw_no) % 28) + 1):02d}",  # 임의의 날짜
+            #         "drwNo": int(draw_no),
+            #         "drwtNo1": numbers[0],
+            #         "drwtNo2": numbers[1],
+            #         "drwtNo3": numbers[2],
+            #         "drwtNo4": numbers[3],
+            #         "drwtNo5": numbers[4],
+            #         "drwtNo6": numbers[5],
+            #         "bnusNo": numbers[6],
+            #         "firstWinamnt": 1500000000,  # 임의의 상금
+            #         "firstPrzwnerCo": 8,  # 임의의 당첨자 수
+            #         "firstAccumamnt": 12000000000,  # 임의의 누적 상금
+            #         "totSellamnt": 85000000000  # 임의의 총 판매금액
+            #     }
+            #     return Response(fallback_data, status=status.HTTP_200_OK)
             
             return Response({"error": f"당첨 정보를 가져오는 중 오류가 발생했습니다: {str(e)}"}, 
                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
