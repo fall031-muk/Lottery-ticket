@@ -93,48 +93,32 @@ class GetLottoNumber(APIView):
     로또 번호를 생성하는 API 뷰
     """
     def get(self, request):
-        # 직전 회차 번호 제외 여부
-        exclude_last = request.GET.get('exclude_last', 'false').lower() == 'true'
+        exclude_numbers = request.GET.get('exclude_numbers', '')
         
-        # 직전 회차 번호 가져오기
-        last_draw_numbers = []
-        if exclude_last:
-            # 현재 최신 회차를 동적으로 가져옴
-            current_draw = get_latest_draw_number()
+        # 제외할 번호 처리
+        exclude_numbers_list = []
+        if exclude_numbers:
             try:
-                lotto_url = f"https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo={current_draw}"
-                lotto_response = requests.get(lotto_url, timeout=3)
-                data = lotto_response.json()
-                
-                if data.get('returnValue') == 'success':
-                    last_draw_numbers = [
-                        data.get('drwtNo1'), data.get('drwtNo2'), data.get('drwtNo3'),
-                        data.get('drwtNo4'), data.get('drwtNo5'), data.get('drwtNo6')
-                    ]
-            except Exception as e:
-                error_msg = str(e)
-                print(f"API 호출 오류(GetLottoNumber): {error_msg}")
-                
-                # PythonAnywhere 프록시 오류인 경우 대체 데이터 사용
-                if "ProxyError" in error_msg or "Max retries exceeded" in error_msg:
-                    # 회차에 따라 일관된 번호 생성 (시드 기반)
-                    seed_value = current_draw % 10000
-                    random.seed(seed_value)
-                    # 직전 회차 번호를 대체 데이터로 설정
-                    last_draw_numbers = sorted(random.sample(range(1, 46), 6))
+                exclude_numbers_list = [int(num) for num in exclude_numbers.split(',') if num.strip()]
+                # 유효한 번호만 필터링 (1-45 사이)
+                exclude_numbers_list = [num for num in exclude_numbers_list if 1 <= num <= 45]
+            except ValueError:
+                pass
         
-        # 사용 가능한 숫자 배열 생성
-        available_numbers = []
-        for i in range(1, 46):
-            if exclude_last and i in last_draw_numbers:
-                continue
-            available_numbers.append(i)
+        # 중복 제거
+        exclude_numbers_list = list(set(exclude_numbers_list))
         
-        # 무작위로 6개 번호 선택
-        lotto_number = random.sample(available_numbers, 6)
-        lotto_number.sort()
+        # 사용 가능한 번호 목록 생성
+        available_numbers = [i for i in range(1, 46) if i not in exclude_numbers_list]
         
-        return Response(lotto_number, status=status.HTTP_200_OK)
+        # 번호 추첨
+        if len(available_numbers) < 6:
+            return Response({"error": "제외할 번호가 너무 많습니다."}, status=400)
+            
+        selected_numbers = random.sample(available_numbers, 6)
+        selected_numbers.sort()
+        
+        return Response(selected_numbers)
 
 
 class GetDrawInfo(APIView):

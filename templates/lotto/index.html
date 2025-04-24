@@ -12,11 +12,10 @@
             </div>
             <div class="card-body">
                 <p class="card-text">버튼을 클릭하면 1부터 45까지의 숫자 중 무작위로 6개의 번호가 선택됩니다.</p>
-                <div class="form-check mb-3">
-                    <input class="form-check-input" type="checkbox" id="excludeLastDraw" checked>
-                    <label class="form-check-label" for="excludeLastDraw">
-                        직전 회차 번호 제외하고 추첨
-                    </label>
+                <div class="mb-3">
+                    <label for="excludeNumbers" class="form-label">제외할 번호 (쉼표로 구분)</label>
+                    <input type="text" class="form-control" id="excludeNumbers" placeholder="예: 1, 2, 3">
+                    <div class="form-text">제외하고 싶은 번호를 쉼표로 구분하여 입력하세요 (1-45 사이의 숫자)</div>
                 </div>
                 <button id="generateBtn" class="btn btn-primary btn-lg w-100">
                     <i class="fas fa-sync-alt"></i> 번호 추첨하기
@@ -123,11 +122,15 @@
             $("#lottoResult").empty();
             $(".loading").show();
             
-            // 직전 회차 제외 옵션 확인
-            const excludeLastDraw = $("#excludeLastDraw").is(":checked");
+            // 사용자가 입력한 제외할 번호 처리
+            const excludeNumbersInput = $("#excludeNumbers").val().trim();
+            let excludeNumbers = [];
+            if (excludeNumbersInput) {
+                excludeNumbers = excludeNumbersInput.split(',').map(num => parseInt(num.trim())).filter(num => !isNaN(num) && num >= 1 && num <= 45);
+            }
             
             // 서버 API 호출
-            fetch(`/lottery/numbers?exclude_last=${excludeLastDraw}`)
+            fetch(`/lottery/numbers?exclude_numbers=${excludeNumbers.join(',')}`)
                 .then(response => response.json())
                 .then(numbers => {
                     // 결과 표시
