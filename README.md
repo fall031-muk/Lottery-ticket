@@ -34,7 +34,7 @@ cd Lottery-ticket
 2. 가상환경 생성 및 활성화
 ```bash
 python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+source venv/bin/activate
 ```
 
 3. 필요한 패키지 설치
@@ -52,14 +52,7 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-## 📝 라이선스
-
-이 프로젝트는 MIT 라이선스 하에 있습니다.
 
 ## 🙏 감사의 글
 
 이 프로젝트는 [동행복권](https://www.dhlottery.co.kr/)의 API를 활용하여 제작되었습니다.
-
-## 📞 연락처
-
-문의사항이나 버그 리포트는 이슈를 통해 남겨주세요.

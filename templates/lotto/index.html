@@ -40,11 +40,68 @@
             </div>
             <div class="card-body">
                 <div id="recentDraws">
-                    <div class="text-center">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">로딩 중...</span>
-                        </div>
-                        <p>당첨 번호를 불러오는 중...</p>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>회차</th>
+                                    <th>당첨일</th>
+                                    <th>당첨번호</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- 최근 5회차 당첨번호 하드코딩 -->
+                                <tr>
+                                    <td>1168회</td>
+                                    <td>2024-04-19</td>
+                                    <td>
+                                        <div class="d-flex flex-wrap justify-content-center">
+                                            <div class="lotto-ball history-ball ball-1-10">9</div>
+                                            <div class="lotto-ball history-ball ball-21-30">21</div>
+                                            <div class="lotto-ball history-ball ball-21-30">24</div>
+                                            <div class="lotto-ball history-ball ball-31-40">30</div>
+                                            <div class="lotto-ball history-ball ball-31-40">33</div>
+                                            <div class="lotto-ball history-ball ball-31-40">37</div>
+                                            <span class="mx-2">+</span>
+                                            <div class="lotto-ball history-ball ball-11-20">29</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>1167회</td>
+                                    <td>2024-04-12</td>
+                                    <td>
+                                        <div class="d-flex flex-wrap justify-content-center">
+                                            <div class="lotto-ball history-ball ball-1-10">8</div>
+                                            <div class="lotto-ball history-ball ball-21-30">23</div>
+                                            <div class="lotto-ball history-ball ball-31-40">31</div>
+                                            <div class="lotto-ball history-ball ball-31-40">35</div>
+                                            <div class="lotto-ball history-ball ball-31-40">39</div>
+                                            <div class="lotto-ball history-ball ball-31-40">40</div>
+                                            <span class="mx-2">+</span>
+                                            <div class="lotto-ball history-ball ball-21-30">24</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>1166회</td>
+                                    <td>2024-04-05</td>
+                                    <td>
+                                        <div class="d-flex flex-wrap justify-content-center">
+                                            <div class="lotto-ball history-ball ball-11-20">14</div>
+                                            <div class="lotto-ball history-ball ball-21-30">23</div>
+                                            <div class="lotto-ball history-ball ball-21-30">25</div>
+                                            <div class="lotto-ball history-ball ball-21-30">27</div>
+                                            <div class="lotto-ball history-ball ball-21-30">29</div>
+                                            <div class="lotto-ball history-ball ball-41-45">42</div>
+                                            <span class="mx-2">+</span>
+                                            <div class="lotto-ball history-ball ball-11-20">16</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- 여기에 더 많은 회차를 추가할 수 있습니다 -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -56,91 +113,10 @@
 {% block extra_js %}
 <script>
     $(document).ready(function() {
-        // 최근 당첨 번호 불러오기
-        loadRecentDraws();
-        
         // 번호 생성 버튼 클릭 이벤트
         $("#generateBtn").click(function() {
             generateLottoNumbers();
         });
-        
-        // 최근 5회차의 당첨 번호를 불러오는 함수
-        function loadRecentDraws() {
-            // 먼저 최신 회차 번호를 API에서 가져옴
-            fetch('/lottery/latest-draw')
-                .then(response => response.json())
-                .then(data => {
-                    const currentDraw = data.latest_draw;
-                    loadDrawHistory(currentDraw);
-                })
-                .catch(error => {
-                    console.error("최신 회차 번호 가져오기 오류:", error);
-                    // 오류 발생 시 기본값 사용
-                    loadDrawHistory(1163);
-                });
-        }
-        
-        // 회차 기록을 로드하는 함수
-        function loadDrawHistory(currentDraw) {
-            let drawsHTML = '<div class="table-responsive"><table class="table table-hover">';
-            drawsHTML += '<thead><tr><th>회차</th><th>당첨일</th><th>당첨번호</th></tr></thead><tbody>';
-            
-            let lastDrawNumbers = [];
-            
-            // 최근 5회차 데이터 가져오기
-            const promises = [];
-            for (let i = 0; i < 5; i++) {
-                const drawNo = currentDraw - i;
-                promises.push(
-                    // 동행복권 API 대신 우리 서버의 프록시 API를 사용
-                    fetch(`/lottery/draw-info?draw_no=${drawNo}`)
-                    .then(response => response.json())
-                );
-            }
-            
-            Promise.all(promises)
-                .then(results => {
-                    results.forEach((data, index) => {
-                        if (data.returnValue === "success") {
-                            const drawNo = data.drwNo;
-                            const drawDate = data.drwNoDate;
-                            const numbers = [
-                                data.drwtNo1, data.drwtNo2, data.drwtNo3, 
-                                data.drwtNo4, data.drwtNo5, data.drwtNo6
-                            ];
-                            const bonusNo = data.bnusNo;
-                            
-                            // 첫 번째 결과(최신 회차)의 번호를 저장
-                            if (index === 0) {
-                                lastDrawNumbers = numbers;
-                                // 전역 변수에 저장하여 번호 생성 시 제외할 수 있도록 함
-                                window.lastDrawNumbers = numbers;
-                            }
-                            
-                            drawsHTML += `<tr>
-                                <td>${drawNo}회</td>
-                                <td>${drawDate}</td>
-                                <td>`;
-                            
-                            // 번호 생성
-                            numbers.forEach(num => {
-                                drawsHTML += getBallHTML(num, 'history-ball');
-                            });
-                            
-                            // 보너스 번호
-                            drawsHTML += ` + ${getBallHTML(bonusNo, 'history-ball')}`;
-                            drawsHTML += '</td></tr>';
-                        }
-                    });
-                    
-                    drawsHTML += '</tbody></table></div>';
-                    $("#recentDraws").html(drawsHTML);
-                })
-                .catch(error => {
-                    $("#recentDraws").html('<div class="alert alert-danger">당첨 번호를 불러오는 중 오류가 발생했습니다.</div>');
-                    console.error("API 호출 오류:", error);
-                });
-        }
         
         // 로또 번호 생성 함수
         function generateLottoNumbers() {
