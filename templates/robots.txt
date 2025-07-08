@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /lottery/numbers
+Disallow: /lottery/latest-draw
+Disallow: /lottery/draw-info
+
+# 사이트맵 위치
+Sitemap: https://hmyun.pythonanywhere.com/sitemap.xml
+
+# 크롤링 지연 시간 (초)
+Crawl-delay: 1 

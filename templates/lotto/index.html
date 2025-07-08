@@ -2,12 +2,72 @@
 
 {% block title %}로또 번호 추첨기 - 무료 로또 번호 생성 및 당첨번호 확인{% endblock %}
 
-{% block meta %}
-<meta name="description" content="무료 로또 번호 추첨기로 1등 당첨을 위한 번호를 생성하세요. 최근 당첨번호 확인, 번호 조합 분석, 당첨 확률 계산 등 다양한 기능을 제공합니다.">
-<meta name="keywords" content="로또 번호 추첨기, 로또 번호 생성, 당첨번호 확인, 로또 번호 조합, 로또 당첨 확률, 무료 로또 번호">
-<meta property="og:title" content="로또 번호 추첨기 - 무료 로또 번호 생성 및 당첨번호 확인">
-<meta property="og:description" content="무료 로또 번호 추첨기로 1등 당첨을 위한 번호를 생성하세요. 최근 당첨번호 확인, 번호 조합 분석, 당첨 확률 계산 등 다양한 기능을 제공합니다.">
-<meta property="og:type" content="website">
+{% block description %}무료 로또 번호 추첨기로 1등 당첨을 위한 번호를 생성하세요. 최근 당첨번호 확인, 번호 조합 분석, 당첨 확률 계산 등 다양한 기능을 제공합니다.{% endblock %}
+
+{% block keywords %}로또 번호 추첨기, 로또 번호 생성, 당첨번호 확인, 로또 번호 조합, 로또 당첨 확률, 무료 로또 번호, 로또 1등, 로또 당첨금, 로또 구매{% endblock %}
+
+{% block og_title %}로또 번호 추첨기 - 무료 로또 번호 생성 및 당첨번호 확인{% endblock %}
+
+{% block og_description %}무료 로또 번호 추첨기로 1등 당첨을 위한 번호를 생성하세요. 최근 당첨번호 확인, 번호 조합 분석, 당첨 확률 계산 등 다양한 기능을 제공합니다.{% endblock %}
+
+{% block canonical_url %}https://hmyun.pythonanywhere.com/{% endblock %}
+
+{% block extra_meta %}
+<!-- 구조화된 데이터 - 웹 애플리케이션 -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "로또 번호 추첨기",
+    "description": "무료 로또 번호 추첨기로 1등 당첨을 위한 번호를 생성하세요. 최근 당첨번호 확인, 번호 조합 분석, 당첨 확률 계산 등 다양한 기능을 제공합니다.",
+    "url": "https://hmyun.pythonanywhere.com",
+    "applicationCategory": "Game",
+    "operatingSystem": "Any",
+    "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+    },
+    "author": {
+        "@type": "Person",
+        "name": "hmyun"
+    }
+}
+</script>
+
+<!-- 구조화된 데이터 - FAQ -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {
+            "@type": "Question",
+            "name": "로또 번호는 어떻게 생성되나요?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "로또 번호는 1부터 45까지의 숫자 중 무작위로 6개를 선택합니다. 보너스 번호는 나머지 숫자 중 하나를 선택합니다."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "로또 당첨 확인은 어떻게 하나요?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "로또 당첨 확인은 로또 판매점이나 온라인에서 가능합니다. 당첨번호와 일치하는 번호를 확인하세요."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "로또 당첨금은 어떻게 받나요?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "로또 당첨금은 로또 판매점에서 당첨 확인 후 수령할 수 있습니다. 1등 당첨의 경우 본사에서 직접 수령해야 합니다."
+            }
+        }
+    ]
+}
+</script>
 {% endblock %}
 
 {% block content %}
@@ -44,6 +104,19 @@
                         <!-- 추첨된 번호가 여기에 표시됩니다 -->
                     </div>
                 </div>
+            </section>
+            
+            <!-- 광고 영역 1 -->
+            <section class="text-center mb-4">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-9260525121131483"
+                     data-ad-slot="auto"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
             </section>
             
             <!-- 최근 당첨 번호 -->
@@ -158,14 +231,126 @@
                     <i class="fas fa-info-circle"></i> 로또 정보
                 </div>
                 <div class="card-body">
-                    <h2>로또 당첨 확률</h2>
-                    <p>로또 1등 당첨 확률은 약 8,145,060분의 1입니다. 이는 45개의 숫자 중 6개를 선택하는 조합의 수입니다.</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h3><i class="fas fa-percentage"></i> 로또 당첨 확률</h3>
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>등수</th>
+                                            <th>당첨 확률</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1등</td>
+                                            <td>1/8,145,060</td>
+                                        </tr>
+                                        <tr>
+                                            <td>2등</td>
+                                            <td>1/1,357,510</td>
+                                        </tr>
+                                        <tr>
+                                            <td>3등</td>
+                                            <td>1/35,724</td>
+                                        </tr>
+                                        <tr>
+                                            <td>4등</td>
+                                            <td>1/733</td>
+                                        </tr>
+                                        <tr>
+                                            <td>5등</td>
+                                            <td>1/45</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h3><i class="fas fa-won-sign"></i> 로또 당첨금</h3>
+                            <p>로또 1등 당첨금은 판매금액과 당첨자 수에 따라 달라집니다:</p>
+                            <ul>
+                                <li><strong>1등:</strong> 약 15~30억원</li>
+                                <li><strong>2등:</strong> 약 3~8천만원</li>
+                                <li><strong>3등:</strong> 약 100~200만원</li>
+                                <li><strong>4등:</strong> 고정 5만원</li>
+                                <li><strong>5등:</strong> 고정 5천원</li>
+                            </ul>
+                        </div>
+                    </div>
                     
-                    <h2>로또 당첨금</h2>
-                    <p>로또 1등 당첨금은 판매금액과 당첨자 수에 따라 달라집니다. 일반적으로 수십억 원에 달할 수 있습니다.</p>
+                    <hr class="my-4">
                     
-                    <h2>로또 구매 방법</h2>
-                    <p>로또는 전국 로또 판매점에서 구매할 수 있습니다. 온라인 구매도 가능합니다.</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h3><i class="fas fa-shopping-cart"></i> 로또 구매 방법</h3>
+                            <p>로또는 다음과 같은 방법으로 구매할 수 있습니다:</p>
+                            <ul>
+                                <li>전국 로또 판매점 방문 구매</li>
+                                <li>동행복권 온라인 사이트</li>
+                                <li>동행복권 모바일 앱</li>
+                                <li>인터넷 뱅킹 복권 서비스</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h3><i class="fas fa-clock"></i> 로또 추첨 일정</h3>
+                            <p>로또는 매주 정기적으로 추첨됩니다:</p>
+                            <ul>
+                                <li><strong>추첨일:</strong> 매주 토요일</li>
+                                <li><strong>추첨시간:</strong> 오후 8시 45분</li>
+                                <li><strong>판매마감:</strong> 토요일 오후 8시</li>
+                                <li><strong>판매시작:</strong> 일요일 오전 6시</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 광고 영역 2 -->
+            <section class="text-center mb-4">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-9260525121131483"
+                     data-ad-slot="auto"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </section>
+
+            <!-- 로또 번호 분석 섹션 -->
+            <section class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-chart-bar"></i> 로또 번호 분석
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <h5><i class="fas fa-exclamation-triangle"></i> 중요한 사실</h5>
+                        <p class="mb-0">로또는 완전한 확률 게임입니다. 과거 당첨번호나 통계는 미래 결과에 영향을 주지 않습니다. 모든 번호는 매 회차마다 동일한 확률로 선택됩니다.</p>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>번호 선택 팁</h4>
+                            <ul>
+                                <li>고른 분포로 번호 선택</li>
+                                <li>연속된 번호 피하기</li>
+                                <li>홀수와 짝수 균형</li>
+                                <li>높은 번호와 낮은 번호 균형</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h4>주의사항</h4>
+                            <ul>
+                                <li>과도한 구매는 금물</li>
+                                <li>생활비 범위 내에서 구매</li>
+                                <li>당첨을 확신하지 말 것</li>
+                                <li>재미로 즐기는 것이 중요</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -175,32 +360,139 @@
                     <i class="fas fa-question-circle"></i> 자주 묻는 질문
                 </div>
                 <div class="card-body">
-                    <h2>로또 번호는 어떻게 생성되나요?</h2>
-                    <p>로또 번호는 1부터 45까지의 숫자 중 무작위로 6개를 선택합니다. 보너스 번호는 나머지 숫자 중 하나를 선택합니다.</p>
-                    
-                    <h2>로또 당첨 확인은 어떻게 하나요?</h2>
-                    <p>로또 당첨 확인은 로또 판매점이나 온라인에서 가능합니다. 당첨번호와 일치하는 번호를 확인하세요.</p>
-                    
-                    <h2>로또 당첨금은 어떻게 받나요?</h2>
-                    <p>로또 당첨금은 로또 판매점에서 당첨 확인 후 수령할 수 있습니다. 1등 당첨의 경우 본사에서 직접 수령해야 합니다.</p>
+                    <div class="accordion" id="faqAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faq1">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="true" aria-controls="collapse1">
+                                    로또 번호는 어떻게 생성되나요?
+                                </button>
+                            </h2>
+                            <div id="collapse1" class="accordion-collapse collapse show" aria-labelledby="faq1" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    <p>로또 번호는 1부터 45까지의 숫자 중 무작위로 6개를 선택합니다. 본 사이트에서는 컴퓨터의 난수 생성기를 사용하여 완전히 무작위로 번호를 생성합니다.</p>
+                                    <p>실제 로또 추첨에서는 추첨기를 통해 물리적으로 번호가 선택되며, 보너스 번호는 나머지 39개 숫자 중 하나를 선택합니다.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faq2">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
+                                    로또 당첨 확인은 어떻게 하나요?
+                                </button>
+                            </h2>
+                            <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="faq2" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    <p>로또 당첨 확인은 다음과 같은 방법으로 가능합니다:</p>
+                                    <ul>
+                                        <li><strong>로또 판매점:</strong> 구매한 복권을 가져가서 확인</li>
+                                        <li><strong>동행복권 홈페이지:</strong> 온라인으로 당첨번호 확인</li>
+                                        <li><strong>동행복권 모바일 앱:</strong> 스마트폰으로 간편 확인</li>
+                                        <li><strong>TV 방송:</strong> 매주 토요일 추첨 방송 시청</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faq3">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
+                                    로또 당첨금은 어떻게 받나요?
+                                </button>
+                            </h2>
+                            <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="faq3" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    <p>당첨금 수령 방법은 당첨 등수에 따라 다릅니다:</p>
+                                    <ul>
+                                        <li><strong>5등 (5천원):</strong> 로또 판매점에서 즉시 수령</li>
+                                        <li><strong>4등 (5만원):</strong> 로또 판매점에서 즉시 수령</li>
+                                        <li><strong>3등 이상:</strong> 농협은행 본·지점 또는 동행복권 본사에서 수령</li>
+                                        <li><strong>1등:</strong> 신분증, 도장, 통장 지참하여 동행복권 본사 방문</li>
+                                    </ul>
+                                    <p><strong>유의사항:</strong> 당첨금 수령 기한은 지급개시일로부터 1년입니다.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faq4">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4" aria-expanded="false" aria-controls="collapse4">
+                                    이 사이트의 번호로 당첨이 보장되나요?
+                                </button>
+                            </h2>
+                            <div id="collapse4" class="accordion-collapse collapse" aria-labelledby="faq4" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    <p><strong>아니요, 당첨을 보장하지 않습니다.</strong> 본 사이트는 단순히 무작위 번호를 생성하는 도구일 뿐입니다.</p>
+                                    <p>로또는 완전한 확률 게임으로, 어떤 방법으로 번호를 선택하든 당첨 확률은 동일합니다. 이 사이트는 번호 선택에 도움을 주는 도구로만 사용하시기 바랍니다.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faq5">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse5" aria-expanded="false" aria-controls="collapse5">
+                                    로또 세금은 얼마나 내야 하나요?
+                                </button>
+                            </h2>
+                            <div id="collapse5" class="accordion-collapse collapse" aria-labelledby="faq5" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    <p>로또 당첨금에 대한 세금은 다음과 같습니다:</p>
+                                    <ul>
+                                        <li><strong>소득세:</strong> 당첨금의 22%</li>
+                                        <li><strong>지방소득세:</strong> 당첨금의 2.2%</li>
+                                        <li><strong>총 세율:</strong> 24.2%</li>
+                                    </ul>
+                                    <p><strong>예시:</strong> 20억원 당첨 시 약 4억 8천만원의 세금을 납부해야 합니다.</p>
+                                    <p>세금은 당첨금 지급 시 자동으로 원천징수됩니다.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
             <!-- 푸터 섹션 -->
-            <footer class="text-center py-4">
+            <footer class="text-center py-4 mt-5" style="background-color: #f8f9fa; border-top: 1px solid #dee2e6;">
                 <div class="container">
                     <div class="row">
                         <div class="col-md-12">
+                            <h5 class="mb-3">로또 번호 추첨기</h5>
+                            <p class="mb-3">무료로 사용할 수 있는 로또 번호 생성 도구입니다. 행운의 번호를 찾아보세요!</p>
+                            
+                            <div class="row mb-4">
+                                <div class="col-md-4">
+                                    <h6>서비스</h6>
+                                    <ul class="list-unstyled">
+                                        <li><a href="{% url 'lotto_main' %}" class="text-decoration-none">로또 번호 생성</a></li>
+                                        <li><a href="{% url 'about' %}" class="text-decoration-none">사이트 소개</a></li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6>정보</h6>
+                                    <ul class="list-unstyled">
+                                        <li><a href="https://www.dhlottery.co.kr/" target="_blank" rel="noopener" class="text-decoration-none">동행복권 공식사이트</a></li>
+                                        <li><a href="https://www.dhlottery.co.kr/gameResult.do?method=byWin" target="_blank" rel="noopener" class="text-decoration-none">당첨번호 확인</a></li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6>정책</h6>
+                                    <ul class="list-unstyled">
+                                        <li><a href="{% url 'privacy' %}" class="text-decoration-none">개인정보 처리방침</a></li>
+                                        <li><a href="{% url 'terms' %}" class="text-decoration-none">이용약관</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="alert alert-warning mb-3">
+                                <small><i class="fas fa-exclamation-triangle"></i> 본 사이트는 로또 번호 생성 도구로, 실제 로또 당첨을 보장하지 않습니다. 로또는 확률 게임이므로 책임감 있게 이용하시기 바랍니다.</small>
+                            </div>
+                            
                             <p class="mb-2">© 2025 로또 번호 추첨기. All rights reserved.</p>
-                            <ul class="list-inline mb-0">
-                                <li class="list-inline-item">
-                                    <a href="{% url 'privacy' %}" class="text-decoration-none">개인정보 처리방침</a>
-                                </li>
-                                <li class="list-inline-item">|</li>
-                                <li class="list-inline-item">
-                                    <a href="{% url 'terms' %}" class="text-decoration-none">이용약관</a>
-                                </li>
-                            </ul>
+                            <p class="mb-0 text-muted">
+                                <small>운영자: hmyun | 
+                                <a href="mailto:contact@example.com" class="text-decoration-none">문의하기</a> | 
+                                마지막 업데이트: 2025년 7월</small>
+                            </p>
                         </div>
                     </div>
                 </div>

@@ -1,68 +1,172 @@
 {% extends 'base.html' %}
 
-{% block title %}사이트 소개 및 문의{% endblock %}
+{% block title %}사이트 소개 - 로또 번호 추첨기{% endblock %}
+
+{% block description %}로또 번호 추첨기 소개 페이지입니다. 서비스 기능, 사용법, 로또 당첨 확률 등 유용한 정보를 제공합니다.{% endblock %}
+
+{% block keywords %}로또 번호 추첨기 소개, 로또 번호 생성, 로또 당첨 확률, 로또 사용법, 로또 정보{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-lg-8 mx-auto">
-        <!-- 사이트 소개 카드 -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <i class="fas fa-info-circle"></i> 사이트 소개
-            </div>
-            <div class="card-body">
-                <h5 class="card-title">로또 번호 추첨기</h5>
-                <p class="card-text">
-                    로또 번호 추첨기는 행운의 로또 번호를 생성하고 당첨 번호를 확인할 수 있는 웹 서비스입니다.
-                    사용자들에게 편리하고 재미있는 로또 번호 추첨 경험을 제공하기 위해 만들어졌습니다.
-                </p>
-                <h6 class="mt-4">주요 기능</h6>
-                <ul>
-                    <li>로또 번호 자동 생성</li>
-                    <li>최신 당첨 번호 확인</li>
-                    <li>직전 회차 번호 제외 기능</li>
-                    <li>반응형 디자인으로 모든 기기에서 사용 가능</li>
-                </ul>
-            </div>
-        </div>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h1><i class="fas fa-info-circle"></i> 사이트 소개</h1>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <h2 class="text-primary">로또 번호 추첨기</h2>
+                        <p class="lead">무료로 사용할 수 있는 로또 번호 생성 도구</p>
+                    </div>
 
-        <!-- 운영자 정보 카드 -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <i class="fas fa-user"></i> 운영자 정보
-            </div>
-            <div class="card-body">
-                <h5 class="card-title">hmyun</h5>
-                <p class="card-text">
-                    이 사이트는 개인 개발자 hmyun이 운영하고 있습니다.
-                    사용자들의 편의를 위해 지속적으로 서비스를 개선하고 있습니다.
-                </p>
-                <h6 class="mt-4">연락처</h6>
-                <ul class="list-unstyled">
-                    <li><i class="fas fa-envelope"></i> 이메일: fall900802@gmail.com</li>
-                    <li><i class="fas fa-globe"></i> 웹사이트: <a href="https://hmyun.pythonanywhere.com">https://hmyun.pythonanywhere.com</a></li>
-                </ul>
-            </div>
-        </div>
+                    <section class="mb-4">
+                        <h3><i class="fas fa-star"></i> 주요 기능</h3>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><i class="fas fa-dice"></i> 로또 번호 생성</h5>
+                                        <p class="card-text">1부터 45까지의 숫자 중 무작위로 6개의 번호를 생성합니다. 제외하고 싶은 번호를 설정할 수도 있습니다.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><i class="fas fa-trophy"></i> 최근 당첨번호</h5>
+                                        <p class="card-text">최근 5회차의 로또 당첨번호를 확인할 수 있습니다. 당첨번호와 보너스 번호를 한눈에 볼 수 있습니다.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
 
-        <!-- 문의하기 카드 -->
-        <div class="card">
-            <div class="card-header">
-                <i class="fas fa-question-circle"></i> 문의하기
-            </div>
-            <div class="card-body">
-                <p class="card-text">
-                    서비스 이용 중 궁금한 점이나 문의사항이 있으시면 아래 연락처로 문의해 주세요.
-                    최대한 빠르게 답변 드리도록 하겠습니다.
-                </p>
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle"></i> 
-                    문의 시 다음 정보를 포함해 주시면 더 빠른 답변이 가능합니다:
-                    <ul class="mt-2">
-                        <li>문의 내용</li>
-                        <li>발생한 문제의 상세 설명</li>
-                        <li>사용하신 기기 및 브라우저 정보</li>
-                    </ul>
+                    <section class="mb-4">
+                        <h3><i class="fas fa-question-circle"></i> 사용법</h3>
+                        <div class="alert alert-info">
+                            <ol class="mb-0">
+                                <li><strong>번호 생성:</strong> "번호 추첨하기" 버튼을 클릭하면 즉시 6개의 번호가 생성됩니다.</li>
+                                <li><strong>제외 번호 설정:</strong> 특정 번호를 제외하고 싶다면 "제외할 번호" 입력란에 쉼표로 구분하여 입력하세요.</li>
+                                <li><strong>재생성:</strong> 마음에 들지 않는다면 언제든지 다시 버튼을 클릭하여 새로운 번호를 생성할 수 있습니다.</li>
+                                <li><strong>당첨번호 확인:</strong> 최근 당첨번호를 확인하여 번호 선택에 참고하세요.</li>
+                            </ol>
+                        </div>
+                    </section>
+
+                    <section class="mb-4">
+                        <h3><i class="fas fa-calculator"></i> 로또 당첨 확률</h3>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>등수</th>
+                                        <th>당첨 조건</th>
+                                        <th>당첨 확률</th>
+                                        <th>예상 당첨금</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1등</td>
+                                        <td>6개 번호 일치</td>
+                                        <td>1/8,145,060</td>
+                                        <td>약 20억원</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2등</td>
+                                        <td>5개 번호 + 보너스 번호 일치</td>
+                                        <td>1/1,357,510</td>
+                                        <td>약 5천만원</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3등</td>
+                                        <td>5개 번호 일치</td>
+                                        <td>1/35,724</td>
+                                        <td>약 150만원</td>
+                                    </tr>
+                                    <tr>
+                                        <td>4등</td>
+                                        <td>4개 번호 일치</td>
+                                        <td>1/733</td>
+                                        <td>5만원</td>
+                                    </tr>
+                                    <tr>
+                                        <td>5등</td>
+                                        <td>3개 번호 일치</td>
+                                        <td>1/45</td>
+                                        <td>5천원</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section class="mb-4">
+                        <h3><i class="fas fa-lightbulb"></i> 로또 구매 팁</h3>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-success"><i class="fas fa-check"></i> 추천 사항</h5>
+                                        <ul class="list-unstyled">
+                                            <li><i class="fas fa-check-circle text-success"></i> 예산을 정하고 그 범위 내에서만 구매</li>
+                                            <li><i class="fas fa-check-circle text-success"></i> 다양한 번호 조합 시도</li>
+                                            <li><i class="fas fa-check-circle text-success"></i> 정기적으로 구매하기보다는 가끔씩 재미로</li>
+                                            <li><i class="fas fa-check-circle text-success"></i> 당첨 확률을 정확히 이해하고 구매</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-danger"><i class="fas fa-times"></i> 주의 사항</h5>
+                                        <ul class="list-unstyled">
+                                            <li><i class="fas fa-times-circle text-danger"></i> 생활비를 투자하지 마세요</li>
+                                            <li><i class="fas fa-times-circle text-danger"></i> 당첨을 확신하고 과도하게 구매하지 마세요</li>
+                                            <li><i class="fas fa-times-circle text-danger"></i> 중독성이 있으므로 적당히 즐기세요</li>
+                                            <li><i class="fas fa-times-circle text-danger"></i> 빚을 내서 구매하지 마세요</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="mb-4">
+                        <h3><i class="fas fa-history"></i> 로또 역사</h3>
+                        <p>우리나라 로또는 2002년 12월 7일 1회차를 시작으로 매주 토요일 오후 8시 45분에 추첨을 진행하고 있습니다. 로또 6/45는 1부터 45까지의 숫자 중 6개를 선택하는 게임으로, 전 세계적으로 가장 인기 있는 복권 게임 중 하나입니다.</p>
+                    </section>
+
+                    <section class="mb-4">
+                        <h3><i class="fas fa-chart-line"></i> 번호 분석</h3>
+                        <div class="alert alert-warning">
+                            <h5><i class="fas fa-exclamation-triangle"></i> 중요한 사실</h5>
+                            <p class="mb-0">로또는 완전한 확률 게임입니다. 과거 당첨번호나 통계는 미래 결과에 영향을 주지 않습니다. 모든 번호는 매 회차마다 동일한 확률로 선택됩니다.</p>
+                        </div>
+                    </section>
+
+                    <section class="mb-4">
+                        <h3><i class="fas fa-shield-alt"></i> 개인정보 보호</h3>
+                        <p>본 서비스는 별도의 회원가입 없이 이용할 수 있으며, 개인정보를 수집하지 않습니다. 단, 서비스 개선을 위해 익명의 이용 통계를 수집할 수 있습니다.</p>
+                    </section>
+
+                    <section class="mb-4">
+                        <h3><i class="fas fa-envelope"></i> 문의 및 건의사항</h3>
+                        <p>서비스 이용 중 문의사항이나 개선 건의사항이 있으시면 언제든지 연락 주세요. 더 나은 서비스를 제공하기 위해 노력하겠습니다.</p>
+                        <div class="alert alert-info">
+                            <p class="mb-0"><strong>운영자:</strong> hmyun<br>
+                            <strong>서비스 시작:</strong> 2024년 1월<br>
+                            <strong>업데이트:</strong> 정기적으로 기능 개선 및 업데이트</p>
+                        </div>
+                    </section>
+
+                    <div class="text-center mt-4">
+                        <a href="{% url 'lotto_main' %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-dice"></i> 로또 번호 생성하러 가기
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
