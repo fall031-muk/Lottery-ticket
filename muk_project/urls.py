@@ -18,13 +18,15 @@ from django.urls import path
 from django.urls.conf import include
 from django.conf import settings
 from django.conf.urls.static import static
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, RedirectView
 from django.contrib.sitemaps.views import sitemap
 from lotto.api.views import LottoMainView
 from lotto.sitemaps import sitemaps
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # lottery/ 경로는 API와 하위 페이지만 포함, 메인은 루트로 리다이렉트
+    path('lottery/', RedirectView.as_view(url='/', permanent=True)),  # 중복 콘텐츠 방지
     path('lottery/', include('lotto.urls')),
     path('', LottoMainView.as_view(), name='home'),  # 루트 URL에 로또 앱 추가
     path('ads.txt', TemplateView.as_view(template_name="ads.txt", content_type="text/plain")),  # ads.txt 파일 제공

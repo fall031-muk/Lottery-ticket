@@ -2,6 +2,7 @@ User-agent: *
 Allow: /
 Disallow: /admin/
 Disallow: /api/
+# API 엔드포인트들 차단 (실제 URL 구조에 맞게 수정)
 Disallow: /lottery/numbers
 Disallow: /lottery/latest-draw
 Disallow: /lottery/draw-info

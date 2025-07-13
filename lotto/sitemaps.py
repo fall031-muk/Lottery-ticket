@@ -11,7 +11,8 @@ class StaticViewSitemap(Sitemap):
     protocol = 'https'
     
     def items(self):
-        return ['home', 'lotto_main', 'about', 'privacy', 'terms']
+        # home만 사용하고 lotto_main 중복 제거
+        return ['home', 'about', 'privacy', 'terms']
     
     def location(self, item):
         return reverse(item)
@@ -20,24 +21,24 @@ class StaticViewSitemap(Sitemap):
         return timezone.now()
 
 
-class LottoSitemap(Sitemap):
-    """로또 관련 페이지들의 사이트맵"""
-    priority = 1.0
-    changefreq = 'daily'
-    protocol = 'https'
-    
-    def items(self):
-        return ['lotto_main']
-    
-    def location(self, item):
-        return reverse(item)
-    
-    def lastmod(self, item):
-        return timezone.now()
+# LottoSitemap 제거하여 중복 방지
+# class LottoSitemap(Sitemap):
+#     """로또 관련 페이지들의 사이트맵"""
+#     priority = 1.0
+#     changefreq = 'daily'
+#     protocol = 'https'
+#     
+#     def items(self):
+#         return ['lotto_main']
+#     
+#     def location(self, item):
+#         return reverse(item)
+#     
+#     def lastmod(self, item):
+#         return timezone.now()
 
 
-# 사이트맵 딕셔너리
+# 사이트맵 딕셔너리 - LottoSitemap 제거
 sitemaps = {
     'static': StaticViewSitemap,
-    'lotto': LottoSitemap,
 } 
