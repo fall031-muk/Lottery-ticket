@@ -1,11 +1,11 @@
 from django.urls import path
 from lotto.api.views import GetLottoNumber, GetLatestDrawNumber, GetDrawInfo
 from lotto import views
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, RedirectView
 
 urlpatterns = [
-    # 메인 페이지는 루트 URL에서만 제공하므로 제거
-    # path('', LottoMainView.as_view(), name='lotto_main'),  # 중복 제거
+    # 메인 페이지는 루트로 리다이렉트 (중복 콘텐츠 방지)
+    path('', RedirectView.as_view(url='/', permanent=True), name='lotto_main'),
     path('numbers', GetLottoNumber.as_view(), name='get_lotto'),  # API 엔드포인트
     path('latest-draw', GetLatestDrawNumber.as_view(), name='get_latest_draw'),  # 최신 회차 API
     path('draw-info', GetDrawInfo.as_view(), name='get_draw_info'),  # 특정 회차 정보 API
