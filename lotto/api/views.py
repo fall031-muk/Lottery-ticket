@@ -1,20 +1,79 @@
 import random
 import requests
 import datetime
+import json
+import os
 from dateutil.relativedelta import relativedelta
 
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import render
+from django.conf import settings
 
+
+def load_lotto_data():
+    """JSON 파일에서 로또 데이터를 로드합니다."""
+    json_file_path = os.path.join(settings.BASE_DIR, 'lotto_num.json')
+    try:
+        with open(json_file_path, 'r', encoding='utf-8') as file:
+            return json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+
+def get_recent_draws(count=5):
+    """최근 N회차의 당첨번호를 가져옵니다."""
+    data = load_lotto_data()
+    return data[:count] if data else []
+
+def get_number_statistics(count=10):
+    """최근 N회차의 번호 통계를 분석합니다."""
+    data = load_lotto_data()
+    recent_data = data[:count] if data else []
+    
+    if not recent_data:
+        return None
+    
+    # 번호 빈도 계산
+    number_count = {}
+    bonus_count = {}
+    
+    for entry in recent_data:
+        # 일반 번호
+        for num in entry['number']:
+            number_count[num] = number_count.get(num, 0) + 1
+        
+        # 보너스 번호
+        bonus = entry['bonus']
+        bonus_count[bonus] = bonus_count.get(bonus, 0) + 1
+    
+    # 가장 많이 나온 번호들
+    sorted_numbers = sorted(number_count.items(), key=lambda x: x[1], reverse=True)
+    sorted_bonus = sorted(bonus_count.items(), key=lambda x: x[1], reverse=True)
+    
+    return {
+        'number_frequency': sorted_numbers,
+        'bonus_frequency': sorted_bonus,
+        'total_rounds': len(recent_data)
+    }
 
 class LottoMainView(APIView):
     """
     로또 메인 페이지를 렌더링하는 뷰
     """
     def get(self, request):
-        return render(request, 'lotto/index.html')
+        # JSON 파일에서 최신 당첨번호 가져오기
+        recent_draws = get_recent_draws(5)
+        latest_draw = recent_draws[0] if recent_draws else None
+        statistics = get_number_statistics(10)
+        
+        context = {
+            'recent_draws': recent_draws,
+            'latest_draw': latest_draw,
+            'statistics': statistics,
+        }
+        
+        return render(request, 'lotto/index.html', context)
 
 
 class GetLatestDrawNumber(APIView):

@@ -119,6 +119,46 @@
                 </script>
             </section>
             
+            <!-- 최신 당첨번호 카드 -->
+            {% if latest_draw %}
+            <section class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <i class="fas fa-trophy"></i> 최신 당첨번호 ({{ latest_draw.round }}회)
+                </div>
+                <div class="card-body text-center">
+                    <p class="mb-2"><strong>추첨일:</strong> {{ latest_draw.date }}</p>
+                    <div class="d-flex flex-wrap justify-content-center align-items-center mb-3">
+                        {% for number in latest_draw.number %}
+                            {% if number >= 1 and number <= 10 %}
+                                <div class="lotto-ball history-ball ball-1-10">{{ number }}</div>
+                            {% elif number >= 11 and number <= 20 %}
+                                <div class="lotto-ball history-ball ball-11-20">{{ number }}</div>
+                            {% elif number >= 21 and number <= 30 %}
+                                <div class="lotto-ball history-ball ball-21-30">{{ number }}</div>
+                            {% elif number >= 31 and number <= 40 %}
+                                <div class="lotto-ball history-ball ball-31-40">{{ number }}</div>
+                            {% else %}
+                                <div class="lotto-ball history-ball ball-41-45">{{ number }}</div>
+                            {% endif %}
+                        {% endfor %}
+                        <span class="mx-3 fs-4">+</span>
+                        {% if latest_draw.bonus >= 1 and latest_draw.bonus <= 10 %}
+                            <div class="lotto-ball history-ball ball-1-10" style="border: 3px solid #ff6b6b;">{{ latest_draw.bonus }}</div>
+                        {% elif latest_draw.bonus >= 11 and latest_draw.bonus <= 20 %}
+                            <div class="lotto-ball history-ball ball-11-20" style="border: 3px solid #ff6b6b;">{{ latest_draw.bonus }}</div>
+                        {% elif latest_draw.bonus >= 21 and latest_draw.bonus <= 30 %}
+                            <div class="lotto-ball history-ball ball-21-30" style="border: 3px solid #ff6b6b;">{{ latest_draw.bonus }}</div>
+                        {% elif latest_draw.bonus >= 31 and latest_draw.bonus <= 40 %}
+                            <div class="lotto-ball history-ball ball-31-40" style="border: 3px solid #ff6b6b;">{{ latest_draw.bonus }}</div>
+                        {% else %}
+                            <div class="lotto-ball history-ball ball-41-45" style="border: 3px solid #ff6b6b;">{{ latest_draw.bonus }}</div>
+                        {% endif %}
+                    </div>
+                    <small class="text-muted">보너스번호는 빨간색 테두리로 표시됩니다</small>
+                </div>
+            </section>
+            {% endif %}
+
             <!-- 최근 당첨 번호 -->
             <section class="card mb-4">
                 <div class="card-header">
@@ -136,94 +176,112 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!-- 최근 5회차 당첨번호 하드코딩 -->
+                                    {% for draw in recent_draws %}
                                     <tr>
-                                        <td>1179회</td>
-                                        <td>2025-07-05</td>
+                                        <td>{{ draw.round }}회</td>
+                                        <td>{{ draw.date }}</td>
                                         <td>
                                             <div class="d-flex flex-wrap justify-content-center">
-                                                <div class="lotto-ball history-ball ball-1-10">3</div>
-                                                <div class="lotto-ball history-ball ball-11-20">16</div>
-                                                <div class="lotto-ball history-ball ball-11-20">18</div>
-                                                <div class="lotto-ball history-ball ball-21-30">24</div>
-                                                <div class="lotto-ball history-ball ball-31-40">40</div>
-                                                <div class="lotto-ball history-ball ball-41-45">44</div>
+                                                {% for number in draw.number %}
+                                                    {% if number >= 1 and number <= 10 %}
+                                                        <div class="lotto-ball history-ball ball-1-10">{{ number }}</div>
+                                                    {% elif number >= 11 and number <= 20 %}
+                                                        <div class="lotto-ball history-ball ball-11-20">{{ number }}</div>
+                                                    {% elif number >= 21 and number <= 30 %}
+                                                        <div class="lotto-ball history-ball ball-21-30">{{ number }}</div>
+                                                    {% elif number >= 31 and number <= 40 %}
+                                                        <div class="lotto-ball history-ball ball-31-40">{{ number }}</div>
+                                                    {% else %}
+                                                        <div class="lotto-ball history-ball ball-41-45">{{ number }}</div>
+                                                    {% endif %}
+                                                {% endfor %}
                                                 <span class="mx-2">+</span>
-                                                <div class="lotto-ball history-ball ball-21-30">21</div>
+                                                {% if draw.bonus >= 1 and draw.bonus <= 10 %}
+                                                    <div class="lotto-ball history-ball ball-1-10">{{ draw.bonus }}</div>
+                                                {% elif draw.bonus >= 11 and draw.bonus <= 20 %}
+                                                    <div class="lotto-ball history-ball ball-11-20">{{ draw.bonus }}</div>
+                                                {% elif draw.bonus >= 21 and draw.bonus <= 30 %}
+                                                    <div class="lotto-ball history-ball ball-21-30">{{ draw.bonus }}</div>
+                                                {% elif draw.bonus >= 31 and draw.bonus <= 40 %}
+                                                    <div class="lotto-ball history-ball ball-31-40">{{ draw.bonus }}</div>
+                                                {% else %}
+                                                    <div class="lotto-ball history-ball ball-41-45">{{ draw.bonus }}</div>
+                                                {% endif %}
                                             </div>
                                         </td>
                                     </tr>
+                                    {% empty %}
                                     <tr>
-                                        <td>1178회</td>
-                                        <td>2025-06-28</td>
-                                        <td>
-                                            <div class="d-flex flex-wrap justify-content-center">
-                                                <div class="lotto-ball history-ball ball-1-10">5</div>
-                                                <div class="lotto-ball history-ball ball-1-10">6</div>
-                                                <div class="lotto-ball history-ball ball-11-20">11</div>
-                                                <div class="lotto-ball history-ball ball-21-30">27</div>
-                                                <div class="lotto-ball history-ball ball-41-45">43</div>
-                                                <div class="lotto-ball history-ball ball-41-45">44</div>
-                                                <span class="mx-2">+</span>
-                                                <div class="lotto-ball history-ball ball-11-20">17</div>
-                                            </div>
-                                        </td>
+                                        <td colspan="3" class="text-center text-muted">데이터를 불러올 수 없습니다.</td>
                                     </tr>
-                                    <tr>
-                                        <td>1177회</td>
-                                        <td>2025-06-21</td>
-                                        <td>
-                                            <div class="d-flex flex-wrap justify-content-center">
-                                                <div class="lotto-ball history-ball ball-1-10">3</div>
-                                                <div class="lotto-ball history-ball ball-1-10">7</div>
-                                                <div class="lotto-ball history-ball ball-11-20">15</div>
-                                                <div class="lotto-ball history-ball ball-11-20">16</div>
-                                                <div class="lotto-ball history-ball ball-11-20">19</div>
-                                                <div class="lotto-ball history-ball ball-41-45">43</div>
-                                                <span class="mx-2">+</span>
-                                                <div class="lotto-ball history-ball ball-21-30">21</div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>1176회</td>
-                                        <td>2025-06-14</td>
-                                        <td>
-                                            <div class="d-flex flex-wrap justify-content-center">
-                                                <div class="lotto-ball history-ball ball-1-10">7</div>
-                                                <div class="lotto-ball history-ball ball-1-10">9</div>
-                                                <div class="lotto-ball history-ball ball-11-20">11</div>
-                                                <div class="lotto-ball history-ball ball-21-30">21</div>
-                                                <div class="lotto-ball history-ball ball-31-40">30</div>
-                                                <div class="lotto-ball history-ball ball-31-40">35</div>
-                                                <span class="mx-2">+</span>
-                                                <div class="lotto-ball history-ball ball-21-30">29</div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>1175회</td>
-                                        <td>2025-06-07</td>
-                                        <td>
-                                            <div class="d-flex flex-wrap justify-content-center">
-                                                <div class="lotto-ball history-ball ball-1-10">3</div>
-                                                <div class="lotto-ball history-ball ball-1-10">4</div>
-                                                <div class="lotto-ball history-ball ball-1-10">6</div>
-                                                <div class="lotto-ball history-ball ball-1-10">8</div>
-                                                <div class="lotto-ball history-ball ball-31-40">32</div>
-                                                <div class="lotto-ball history-ball ball-41-45">42</div>
-                                                <span class="mx-2">+</span>
-                                                <div class="lotto-ball history-ball ball-31-40">31</div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <!-- 여기에 더 많은 회차를 추가할 수 있습니다 -->
+                                    {% endfor %}
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
             </section>
+
+            <!-- 번호 통계 섹션 -->
+            {% if statistics %}
+            <section class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-chart-line"></i> 최근 {{ statistics.total_rounds }}회차 번호 통계
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> 
+                        <strong>주의:</strong> 이 통계는 참고용일 뿐, 로또는 완전한 확률 게임으로 과거 결과가 미래에 영향을 주지 않습니다.
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h5><i class="fas fa-fire"></i> 자주 나온 번호 (TOP 10)</h5>
+                            <div class="row">
+                                {% for number, count in statistics.number_frequency|slice:":10" %}
+                                <div class="col-6 col-md-4 col-lg-3 mb-2">
+                                    <div class="d-flex align-items-center">
+                                        {% if number >= 1 and number <= 10 %}
+                                            <div class="lotto-ball history-ball ball-1-10 me-2">{{ number }}</div>
+                                        {% elif number >= 11 and number <= 20 %}
+                                            <div class="lotto-ball history-ball ball-11-20 me-2">{{ number }}</div>
+                                        {% elif number >= 21 and number <= 30 %}
+                                            <div class="lotto-ball history-ball ball-21-30 me-2">{{ number }}</div>
+                                        {% elif number >= 31 and number <= 40 %}
+                                            <div class="lotto-ball history-ball ball-31-40 me-2">{{ number }}</div>
+                                        {% else %}
+                                            <div class="lotto-ball history-ball ball-41-45 me-2">{{ number }}</div>
+                                        {% endif %}
+                                        <small class="text-muted">{{ count }}회</small>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <h5><i class="fas fa-plus-circle"></i> 자주 나온 보너스번호</h5>
+                            {% for number, count in statistics.bonus_frequency|slice:":5" %}
+                            <div class="d-flex align-items-center mb-2">
+                                {% if number >= 1 and number <= 10 %}
+                                    <div class="lotto-ball history-ball ball-1-10 me-2" style="border: 2px solid #ff6b6b;">{{ number }}</div>
+                                {% elif number >= 11 and number <= 20 %}
+                                    <div class="lotto-ball history-ball ball-11-20 me-2" style="border: 2px solid #ff6b6b;">{{ number }}</div>
+                                {% elif number >= 21 and number <= 30 %}
+                                    <div class="lotto-ball history-ball ball-21-30 me-2" style="border: 2px solid #ff6b6b;">{{ number }}</div>
+                                {% elif number >= 31 and number <= 40 %}
+                                    <div class="lotto-ball history-ball ball-31-40 me-2" style="border: 2px solid #ff6b6b;">{{ number }}</div>
+                                {% else %}
+                                    <div class="lotto-ball history-ball ball-41-45 me-2" style="border: 2px solid #ff6b6b;">{{ number }}</div>
+                                {% endif %}
+                                <small class="text-muted">{{ count }}회</small>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </section>
+            {% endif %}
 
             <!-- 로또 정보 섹션 -->
             <section class="card mb-4">
