@@ -6,6 +6,9 @@ Disallow: /api/
 Disallow: /lottery/numbers
 Disallow: /lottery/latest-draw
 Disallow: /lottery/draw-info
+Disallow: /lottery/statistics
+# 검색 URL 차단 (검색 기능이 구현되어 있지 않음)
+Disallow: /search
 
 # 사이트맵 위치
 Sitemap: https://hmyun.pythonanywhere.com/sitemap.xml

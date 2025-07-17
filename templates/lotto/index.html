@@ -223,10 +223,18 @@
             </section>
 
             <!-- 번호 통계 섹션 -->
-            {% if statistics %}
-            <section class="card mb-4">
+            <section class="card mb-4" id="statisticsSection">
                 <div class="card-header">
-                    <i class="fas fa-chart-line"></i> 최근 {{ statistics.total_rounds }}회차 번호 통계
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-chart-line"></i> 번호 통계 (<span id="currentRounds">{{ statistics.total_rounds|default:"10" }}</span>회차 기준)
+                        </div>
+                        <div class="btn-group" role="group" aria-label="회차 선택">
+                            <button type="button" class="btn btn-success btn-sm rounds-btn active" data-rounds="10">10회차</button>
+                            <button type="button" class="btn btn-info btn-sm rounds-btn" data-rounds="30">30회차</button>
+                            <button type="button" class="btn btn-info btn-sm rounds-btn" data-rounds="50">50회차</button>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="alert alert-info">
@@ -234,54 +242,63 @@
                         <strong>주의:</strong> 이 통계는 참고용일 뿐, 로또는 완전한 확률 게임으로 과거 결과가 미래에 영향을 주지 않습니다.
                     </div>
                     
-                    <div class="row">
-                        <div class="col-md-8">
-                            <h5><i class="fas fa-fire"></i> 자주 나온 번호 (TOP 10)</h5>
-                            <div class="row">
-                                {% for number, count in statistics.number_frequency|slice:":10" %}
-                                <div class="col-6 col-md-4 col-lg-3 mb-2">
-                                    <div class="d-flex align-items-center">
+                    <div id="statisticsContent">
+                        {% if statistics %}
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h5><i class="fas fa-fire"></i> 자주 나온 번호 (TOP 10)</h5>
+                                <div class="row" id="frequentNumbers">
+                                    {% for number, count in statistics.number_frequency|slice:":10" %}
+                                    <div class="col-6 col-md-4 col-lg-3 mb-2">
+                                        <div class="d-flex align-items-center">
+                                            {% if number >= 1 and number <= 10 %}
+                                                <div class="lotto-ball history-ball ball-1-10 me-2">{{ number }}</div>
+                                            {% elif number >= 11 and number <= 20 %}
+                                                <div class="lotto-ball history-ball ball-11-20 me-2">{{ number }}</div>
+                                            {% elif number >= 21 and number <= 30 %}
+                                                <div class="lotto-ball history-ball ball-21-30 me-2">{{ number }}</div>
+                                            {% elif number >= 31 and number <= 40 %}
+                                                <div class="lotto-ball history-ball ball-31-40 me-2">{{ number }}</div>
+                                            {% else %}
+                                                <div class="lotto-ball history-ball ball-41-45 me-2">{{ number }}</div>
+                                            {% endif %}
+                                            <small class="text-muted">{{ count }}회</small>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <h5><i class="fas fa-plus-circle"></i> 자주 나온 보너스번호</h5>
+                                <div id="frequentBonus">
+                                    {% for number, count in statistics.bonus_frequency|slice:":5" %}
+                                    <div class="d-flex align-items-center mb-2">
                                         {% if number >= 1 and number <= 10 %}
-                                            <div class="lotto-ball history-ball ball-1-10 me-2">{{ number }}</div>
+                                            <div class="lotto-ball history-ball ball-1-10 me-2" style="border: 2px solid #ff6b6b;">{{ number }}</div>
                                         {% elif number >= 11 and number <= 20 %}
-                                            <div class="lotto-ball history-ball ball-11-20 me-2">{{ number }}</div>
+                                            <div class="lotto-ball history-ball ball-11-20 me-2" style="border: 2px solid #ff6b6b;">{{ number }}</div>
                                         {% elif number >= 21 and number <= 30 %}
-                                            <div class="lotto-ball history-ball ball-21-30 me-2">{{ number }}</div>
+                                            <div class="lotto-ball history-ball ball-21-30 me-2" style="border: 2px solid #ff6b6b;">{{ number }}</div>
                                         {% elif number >= 31 and number <= 40 %}
-                                            <div class="lotto-ball history-ball ball-31-40 me-2">{{ number }}</div>
+                                            <div class="lotto-ball history-ball ball-31-40 me-2" style="border: 2px solid #ff6b6b;">{{ number }}</div>
                                         {% else %}
-                                            <div class="lotto-ball history-ball ball-41-45 me-2">{{ number }}</div>
+                                            <div class="lotto-ball history-ball ball-41-45 me-2" style="border: 2px solid #ff6b6b;">{{ number }}</div>
                                         {% endif %}
                                         <small class="text-muted">{{ count }}회</small>
                                     </div>
+                                    {% endfor %}
                                 </div>
-                                {% endfor %}
                             </div>
                         </div>
-                        
-                        <div class="col-md-4">
-                            <h5><i class="fas fa-plus-circle"></i> 자주 나온 보너스번호</h5>
-                            {% for number, count in statistics.bonus_frequency|slice:":5" %}
-                            <div class="d-flex align-items-center mb-2">
-                                {% if number >= 1 and number <= 10 %}
-                                    <div class="lotto-ball history-ball ball-1-10 me-2" style="border: 2px solid #ff6b6b;">{{ number }}</div>
-                                {% elif number >= 11 and number <= 20 %}
-                                    <div class="lotto-ball history-ball ball-11-20 me-2" style="border: 2px solid #ff6b6b;">{{ number }}</div>
-                                {% elif number >= 21 and number <= 30 %}
-                                    <div class="lotto-ball history-ball ball-21-30 me-2" style="border: 2px solid #ff6b6b;">{{ number }}</div>
-                                {% elif number >= 31 and number <= 40 %}
-                                    <div class="lotto-ball history-ball ball-31-40 me-2" style="border: 2px solid #ff6b6b;">{{ number }}</div>
-                                {% else %}
-                                    <div class="lotto-ball history-ball ball-41-45 me-2" style="border: 2px solid #ff6b6b;">{{ number }}</div>
-                                {% endif %}
-                                <small class="text-muted">{{ count }}회</small>
-                            </div>
-                            {% endfor %}
+                        {% else %}
+                        <div class="text-center text-muted">
+                            <p>통계 데이터를 불러오는 중...</p>
                         </div>
+                        {% endif %}
                     </div>
                 </div>
             </section>
-            {% endif %}
 
             <!-- 로또 정보 섹션 -->
             <section class="card mb-4">
@@ -624,6 +641,100 @@
             }
             
             return `<div class="${ballClass}">${number}</div>`;
+        }
+        
+        // 회차 선택 버튼 이벤트
+        $('.rounds-btn').click(function() {
+            const rounds = $(this).data('rounds');
+            loadStatistics(rounds);
+            
+            // 버튼 활성화 상태 변경
+            $('.rounds-btn').removeClass('active btn-success').addClass('btn-info');
+            $(this).removeClass('btn-info').addClass('active btn-success');
+        });
+        
+        // 통계 데이터 로드 함수
+        function loadStatistics(rounds) {
+            // 로딩 표시
+            $('#statisticsContent').html('<div class="text-center"><i class="fas fa-spinner fa-spin fa-2x"></i><p class="mt-2">통계 데이터를 불러오는 중...</p></div>');
+            $('#currentRounds').text(rounds);
+            
+            // API 호출
+            fetch(`/lottery/statistics?rounds=${rounds}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        $('#statisticsContent').html(`<div class="alert alert-danger">${data.error}</div>`);
+                        return;
+                    }
+                    
+                    // 통계 데이터 표시
+                    updateStatisticsContent(data, rounds);
+                })
+                .catch(error => {
+                    console.error('Statistics API 오류:', error);
+                    $('#statisticsContent').html('<div class="alert alert-danger">통계 데이터를 불러오는 중 오류가 발생했습니다.</div>');
+                });
+        }
+        
+        // 통계 콘텐츠 업데이트 함수
+        function updateStatisticsContent(statistics, rounds) {
+            let frequentNumbersHtml = '';
+            let frequentBonusHtml = '';
+            
+            // 회차에 따라 보여줄 번호 개수 결정
+            let topCount;
+            if (rounds <= 10) {
+                topCount = 10;
+            } else if (rounds <= 30) {
+                topCount = 15;
+            } else {
+                topCount = 20;
+            }
+            
+            // 자주 나온 번호
+            statistics.number_frequency.slice(0, topCount).forEach(([number, count]) => {
+                const ballHtml = getBallHTML(number, 'history-ball me-2');
+                frequentNumbersHtml += `
+                    <div class="col-6 col-md-4 col-lg-3 mb-2">
+                        <div class="d-flex align-items-center">
+                            ${ballHtml}
+                            <small class="text-muted">${count}회</small>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // 자주 나온 보너스번호 (항상 TOP 5)
+            statistics.bonus_frequency.slice(0, 5).forEach(([number, count]) => {
+                const ballHtml = getBallHTML(number, 'history-ball me-2').replace('>', ' style="border: 2px solid #ff6b6b;">');
+                frequentBonusHtml += `
+                    <div class="d-flex align-items-center mb-2">
+                        ${ballHtml}
+                        <small class="text-muted">${count}회</small>
+                    </div>
+                `;
+            });
+            
+            const contentHtml = `
+                <div class="row">
+                    <div class="col-md-8">
+                        <h5><i class="fas fa-fire"></i> 자주 나온 번호 (TOP ${topCount})</h5>
+                        <div class="row" id="frequentNumbers">
+                            ${frequentNumbersHtml}
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <h5><i class="fas fa-plus-circle"></i> 자주 나온 보너스번호</h5>
+                        <div id="frequentBonus">
+                            ${frequentBonusHtml}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            $('#statisticsContent').html(contentHtml);
         }
     });
 </script>

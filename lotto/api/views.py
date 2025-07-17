@@ -180,6 +180,29 @@ class GetLottoNumber(APIView):
         return Response(selected_numbers)
 
 
+class GetNumberStatistics(APIView):
+    """
+    지정된 회차의 번호 통계를 제공하는 API 뷰
+    """
+    def get(self, request):
+        rounds = request.GET.get('rounds', '10')
+        
+        try:
+            rounds = int(rounds)
+            if rounds not in [10, 30, 50]:
+                rounds = 10  # 기본값
+        except ValueError:
+            rounds = 10
+        
+        statistics = get_number_statistics(rounds)
+        
+        if statistics:
+            return Response(statistics, status=status.HTTP_200_OK)
+        else:
+            return Response({"error": "통계 데이터를 불러올 수 없습니다."}, 
+                           status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 class GetDrawInfo(APIView):
     """
     특정 회차의 로또 당첨 정보를 제공하는 API 뷰
