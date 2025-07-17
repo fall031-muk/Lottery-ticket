@@ -85,14 +85,37 @@
                     <i class="fas fa-random"></i> 로또 번호 추첨
                 </div>
                 <div class="card-body">
-                    <p class="card-text">버튼을 클릭하면 1부터 45까지의 숫자 중 무작위로 6개의 번호가 선택됩니다.</p>
+                    <p class="card-text">버튼을 클릭하면 선택한 방식에 따라 6개의 번호가 생성됩니다.</p>
+                    
+                    <!-- 생성 모드 선택 -->
+                    <div class="mb-3">
+                        <label class="form-label">생성 방식 선택</label>
+                        <div class="btn-group w-100" role="group" aria-label="생성 방식 선택">
+                            <input type="radio" class="btn-check" name="generationMode" id="randomMode" value="random" checked>
+                            <label class="btn btn-outline-primary" for="randomMode">
+                                <i class="fas fa-dice"></i> 완전 랜덤
+                            </label>
+                            
+                            <input type="radio" class="btn-check" name="generationMode" id="smartMode" value="smart">
+                            <label class="btn btn-outline-warning" for="smartMode">
+                                <i class="fas fa-brain"></i> 통계 기반
+                            </label>
+                        </div>
+                        <div class="form-text mt-2">
+                            <small id="modeDescription">
+                                <strong>완전 랜덤:</strong> 1부터 45까지 완전히 무작위로 선택
+                            </small>
+                        </div>
+                    </div>
+                    
                     <div class="mb-3">
                         <label for="excludeNumbers" class="form-label">제외할 번호 (쉼표로 구분)</label>
                         <input type="text" class="form-control" id="excludeNumbers" placeholder="예: 1, 2, 3">
                         <div class="form-text">제외하고 싶은 번호를 쉼표로 구분하여 입력하세요 (1-45 사이의 숫자)</div>
                     </div>
+                    
                     <button id="generateBtn" class="btn btn-primary btn-lg w-100">
-                        <i class="fas fa-sync-alt"></i> 번호 추첨하기
+                        <i class="fas fa-sync-alt"></i> <span id="generateBtnText">번호 추첨하기</span>
                     </button>
                     
                     <div class="loading">
@@ -407,7 +430,21 @@
                     </div>
                     
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
+                            <h4>번호 생성 방식</h4>
+                            <ul>
+                                <li><strong>완전 랜덤:</strong> 1-45 중 완전 무작위 선택</li>
+                                <li><strong>통계 기반:</strong> 과거 데이터 분석 활용
+                                    <ul class="mt-2">
+                                        <li>최근 50회차 자주 나온 번호 1-2개</li>
+                                        <li>최근 20회차 안 나온 번호 1-2개</li>
+                                        <li>15회차 이상 안 나온 번호 1개</li>
+                                        <li>나머지는 일반 풀에서 랜덤</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
                             <h4>번호 선택 팁</h4>
                             <ul>
                                 <li>고른 분포로 번호 선택</li>
@@ -416,7 +453,7 @@
                                 <li>높은 번호와 낮은 번호 균형</li>
                             </ul>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <h4>주의사항</h4>
                             <ul>
                                 <li>과도한 구매는 금물</li>
@@ -580,10 +617,32 @@
 {% block extra_js %}
 <script>
     $(document).ready(function() {
+        // 생성 모드 변경 시 설명 업데이트
+        $('input[name="generationMode"]').change(function() {
+            const mode = $(this).val();
+            updateModeDescription(mode);
+        });
+        
         // 번호 생성 버튼 클릭 이벤트
         $("#generateBtn").click(function() {
             generateLottoNumbers();
         });
+        
+        // 생성 모드 설명 업데이트 함수
+        function updateModeDescription(mode) {
+            const descriptions = {
+                'random': '<strong>완전 랜덤:</strong> 1부터 45까지 완전히 무작위로 선택',
+                'smart': '<strong>통계 기반:</strong> 최근 당첨번호 분석을 통해 자주 나온 번호와 오랫동안 안 나온 번호를 조합하여 생성 (재미를 위한 기능으로 실제 당첨 확률은 동일합니다)'
+            };
+            $('#modeDescription').html(`<small>${descriptions[mode]}</small>`);
+            
+            // 버튼 텍스트도 변경
+            const buttonTexts = {
+                'random': '랜덤 번호 추첨하기',
+                'smart': '스마트 번호 추첨하기'
+            };
+            $('#generateBtnText').text(buttonTexts[mode]);
+        }
         
         // 로또 번호 생성 함수
         function generateLottoNumbers() {
@@ -597,10 +656,27 @@
                 excludeNumbers = excludeNumbersInput.split(',').map(num => parseInt(num.trim())).filter(num => !isNaN(num) && num >= 1 && num <= 45);
             }
             
+            // 선택된 생성 모드 가져오기
+            const generationMode = $('input[name="generationMode"]:checked').val();
+            
             // 서버 API 호출
-            fetch(`/lottery/numbers?exclude_numbers=${excludeNumbers.join(',')}`)
+            const apiUrl = `/lottery/numbers?exclude_numbers=${excludeNumbers.join(',')}&mode=${generationMode}`;
+            
+            fetch(apiUrl)
                 .then(response => response.json())
-                .then(numbers => {
+                .then(data => {
+                    let numbers;
+                    let info = '';
+                    
+                    // 응답 형식에 따라 처리
+                    if (data.numbers) {
+                        numbers = data.numbers;
+                        info = data.info || '';
+                    } else {
+                        // 이전 형식 지원 (배열 직접 반환)
+                        numbers = data;
+                    }
+                    
                     // 결과 표시
                     numbers.forEach((number, index) => {
                         // 번호 등장에 약간의 애니메이션 효과를 주기 위한 지연
@@ -608,6 +684,13 @@
                             $("#lottoResult").append(getBallHTML(number));
                         }, index * 300);
                     });
+                    
+                    // 정보 메시지 표시
+                    if (info) {
+                        setTimeout(() => {
+                            $("#lottoResult").append(`<div class="mt-3"><small class="text-muted"><i class="fas fa-info-circle"></i> ${info}</small></div>`);
+                        }, numbers.length * 300 + 200);
+                    }
                     
                     $(".loading").hide();
                 })

@@ -57,6 +57,121 @@ def get_number_statistics(count=10):
         'total_rounds': len(recent_data)
     }
 
+
+def get_frequent_numbers(count=50, top=10):
+    """최근 N회차에서 자주 나온 번호들을 반환합니다."""
+    data = load_lotto_data()
+    recent_data = data[:count] if data else []
+    
+    if not recent_data:
+        return []
+    
+    number_count = {}
+    for entry in recent_data:
+        for num in entry['number']:
+            number_count[num] = number_count.get(num, 0) + 1
+    
+    # 빈도순으로 정렬하여 상위 번호들 반환
+    sorted_numbers = sorted(number_count.items(), key=lambda x: x[1], reverse=True)
+    return [num for num, count in sorted_numbers[:top]]
+
+
+def get_rare_numbers(count=50):
+    """최근 N회차에서 나오지 않은 번호들을 반환합니다."""
+    data = load_lotto_data()
+    recent_data = data[:count] if data else []
+    
+    if not recent_data:
+        return list(range(1, 46))
+    
+    # 최근 N회차에 나온 모든 번호 수집
+    appeared_numbers = set()
+    for entry in recent_data:
+        appeared_numbers.update(entry['number'])
+        appeared_numbers.add(entry['bonus'])
+    
+    # 전체 번호(1-45)에서 나온 번호들을 제외
+    all_numbers = set(range(1, 46))
+    rare_numbers = list(all_numbers - appeared_numbers)
+    
+    return rare_numbers
+
+
+def get_overdue_numbers(min_rounds=10):
+    """가장 오랫동안 나오지 않은 번호들을 반환합니다."""
+    data = load_lotto_data()
+    
+    if not data:
+        return []
+    
+    # 각 번호가 마지막으로 나온 회차 추적
+    last_appearance = {}
+    overdue_numbers = []
+    
+    for idx, entry in enumerate(data):
+        current_round = entry['round']
+        
+        # 해당 회차에 나온 모든 번호 (일반 번호 + 보너스 번호)
+        appeared_numbers = entry['number'] + [entry['bonus']]
+        
+        for num in appeared_numbers:
+            last_appearance[num] = idx  # 인덱스로 위치 저장
+    
+    # min_rounds 이상 나오지 않은 번호들 찾기
+    for num in range(1, 46):
+        if num not in last_appearance or last_appearance[num] >= min_rounds:
+            overdue_numbers.append(num)
+    
+    return overdue_numbers
+
+
+def generate_smart_numbers(exclude_numbers=None):
+    """통계 기반 스마트 번호 생성"""
+    if exclude_numbers is None:
+        exclude_numbers = []
+    
+    # 사용 가능한 번호 풀
+    available_numbers = [i for i in range(1, 46) if i not in exclude_numbers]
+    
+    if len(available_numbers) < 6:
+        # 제외할 번호가 너무 많으면 일반 랜덤 생성
+        return random.sample(available_numbers, min(6, len(available_numbers)))
+    
+    selected_numbers = []
+    
+    # 1. 최근 50회차에서 자주 나온 번호 중 1-2개 선택
+    frequent_numbers = [n for n in get_frequent_numbers(50, 10) if n not in exclude_numbers]
+    if frequent_numbers:
+        frequent_count = min(2, len(frequent_numbers))
+        selected_numbers.extend(random.sample(frequent_numbers, frequent_count))
+    
+    # 2. 최근 안 나온 번호 중 1-2개 선택
+    rare_numbers = [n for n in get_rare_numbers(20) if n not in exclude_numbers and n not in selected_numbers]
+    if rare_numbers:
+        rare_count = min(2, len(rare_numbers))
+        selected_numbers.extend(random.sample(rare_numbers, rare_count))
+    
+    # 3. 오랫동안 안 나온 번호 중 1개 선택
+    overdue_numbers = [n for n in get_overdue_numbers(15) if n not in exclude_numbers and n not in selected_numbers]
+    if overdue_numbers and len(selected_numbers) < 5:
+        selected_numbers.append(random.choice(overdue_numbers))
+    
+    # 4. 나머지는 일반 풀에서 랜덤 선택
+    remaining_pool = [n for n in available_numbers if n not in selected_numbers]
+    remaining_needed = 6 - len(selected_numbers)
+    
+    if remaining_needed > 0 and remaining_pool:
+        selected_numbers.extend(random.sample(remaining_pool, min(remaining_needed, len(remaining_pool))))
+    
+    # 6개가 안 되면 부족한 만큼 일반 풀에서 채움
+    while len(selected_numbers) < 6 and remaining_pool:
+        remaining_pool = [n for n in available_numbers if n not in selected_numbers]
+        if remaining_pool:
+            selected_numbers.append(random.choice(remaining_pool))
+    
+    # 정렬하여 반환
+    return sorted(selected_numbers[:6])
+
 class LottoMainView(APIView):
     """
     로또 메인 페이지를 렌더링하는 뷰
@@ -153,6 +268,7 @@ class GetLottoNumber(APIView):
     """
     def get(self, request):
         exclude_numbers = request.GET.get('exclude_numbers', '')
+        generation_mode = request.GET.get('mode', 'random')  # 'random' 또는 'smart'
         
         # 제외할 번호 처리
         exclude_numbers_list = []
@@ -173,11 +289,38 @@ class GetLottoNumber(APIView):
         # 번호 추첨
         if len(available_numbers) < 6:
             return Response({"error": "제외할 번호가 너무 많습니다."}, status=400)
-            
-        selected_numbers = random.sample(available_numbers, 6)
-        selected_numbers.sort()
         
-        return Response(selected_numbers)
+        # 생성 모드에 따라 다른 로직 적용
+        if generation_mode == 'smart':
+            try:
+                selected_numbers = generate_smart_numbers(exclude_numbers_list)
+                if len(selected_numbers) < 6:
+                    # 스마트 생성 실패 시 랜덤으로 폴백
+                    selected_numbers = random.sample(available_numbers, 6)
+                    selected_numbers.sort()
+                return Response({
+                    "numbers": selected_numbers,
+                    "mode": "smart",
+                    "info": "통계 기반으로 생성된 번호입니다"
+                })
+            except Exception as e:
+                # 스마트 생성 실패 시 랜덤으로 폴백
+                selected_numbers = random.sample(available_numbers, 6)
+                selected_numbers.sort()
+                return Response({
+                    "numbers": selected_numbers,
+                    "mode": "random",
+                    "info": "스마트 생성 실패로 랜덤 생성되었습니다"
+                })
+        else:
+            # 기본 랜덤 생성
+            selected_numbers = random.sample(available_numbers, 6)
+            selected_numbers.sort()
+            return Response({
+                "numbers": selected_numbers,
+                "mode": "random",
+                "info": "완전 랜덤으로 생성된 번호입니다"
+            })
 
 
 class GetNumberStatistics(APIView):
