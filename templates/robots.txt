@@ -1,17 +1,36 @@
 User-agent: *
 Allow: /
+Allow: /lottery/
+Allow: /about/
+Allow: /privacy/
+Allow: /terms/
+
+# 크롤링 방지 경로
 Disallow: /admin/
 Disallow: /api/
-# API 엔드포인트들 차단 (실제 URL 구조에 맞게 수정)
 Disallow: /lottery/numbers
 Disallow: /lottery/latest-draw
 Disallow: /lottery/draw-info
 Disallow: /lottery/statistics
-# 검색 URL 차단 (검색 기능이 구현되어 있지 않음)
 Disallow: /search
+Disallow: /static/admin/
+
+# 특정 검색엔진 설정
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
 
 # 사이트맵 위치
 Sitemap: https://hmyun.pythonanywhere.com/sitemap.xml
 
 # 크롤링 지연 시간 (초)
-Crawl-delay: 1 
+Crawl-delay: 1
+
+# 사이트 정보
+# 사이트명: 로또 번호 추첨기
+# 언어: 한국어 (ko)
+# 최종 업데이트: 2025-01-17 
