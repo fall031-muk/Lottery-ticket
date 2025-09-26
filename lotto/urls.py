@@ -13,4 +13,11 @@ urlpatterns = [
     path('about/', views.about, name='about'),  # 사이트 소개 페이지
     path('privacy/', TemplateView.as_view(template_name='lotto/privacy.html'), name='privacy'),  # 개인정보 처리방침
     path('terms/', TemplateView.as_view(template_name='lotto/terms.html'), name='terms'),  # 이용약관
+    # 랜딩 페이지
+    path('history/', views.history, name='history'),
+    path('stats/', views.stats_page, name='stats_page'),
+    path('calculator/', views.calculator, name='calculator'),
+    # 컨텐츠 준비 후 오픈
+    # path('tips/', views.tips, name='tips'),
+    # path('news/', views.news, name='news'),
 ]

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}로또 확률 계산기 | 조합별 당첨 확률 계산{% endblock %}
+{% block description %}선택한 로또 번호 조합의 이론적 당첨 확률을 계산해보세요.{% endblock %}
+{% block keywords %}로또 확률 계산기, 로또 당첨 확률, 로또 조합 확률{% endblock %}
+
+{% block canonical_url %}https://hmyun.pythonanywhere.com/lottery/calculator/{% endblock %}
+
+{% block extra_meta %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "로또 당첨 확률 계산 방법",
+  "step": [
+    {"@type":"HowToStep","name":"번호 입력","text":"1~45 사이 6개 번호를 입력"},
+    {"@type":"HowToStep","name":"계산","text":"이론적 조합 수 기반 확률 계산"}
+  ]
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-header"><i class="fas fa-calculator"></i> 로또 확률 계산기</div>
+  <div class="card-body">
+    <div class="row g-2 mb-3">
+      {% for i in "123456" %}
+      <div class="col-4 col-md-2">
+        <input type="number" class="form-control num" min="1" max="45" placeholder="번호">
+      </div>
+      {% endfor %}
+    </div>
+    <button id="calcBtn" class="btn btn-primary">계산하기</button>
+    <div id="result" class="mt-3"></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function combinations(n, r){
+  function fact(x){ let v=1; for(let i=2;i<=x;i++) v*=i; return v; }
+  return fact(n) / (fact(r) * fact(n-r));
+}
+document.addEventListener('DOMContentLoaded', function(){
+  document.getElementById('calcBtn').addEventListener('click', function(){
+    const vals = Array.from(document.querySelectorAll('.num')).map(i=>parseInt(i.value,10)).filter(v=>!isNaN(v));
+    const set = new Set(vals);
+    if (vals.length!==6 || set.size!==6 || vals.some(v=>v<1||v>45)){
+      document.getElementById('result').innerHTML = '<div class="alert alert-warning">1~45 사이 중복 없는 6개 번호를 입력하세요.</div>';
+      return;
+    }
+    const total = combinations(45,6);
+    const prob = 1/total;
+    document.getElementById('result').innerHTML = `<div class="alert alert-info">이론적 1등 확률: 1 / ${Math.round(total).toLocaleString()} (약 ${(prob*100).toExponential(2)}%)</div>`;
+  });
+});
+</script>
+{% endblock %}
+
+

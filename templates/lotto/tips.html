@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}로또 구매 팁 | 책임감 있는 구매 가이드{% endblock %}
+{% block description %}로또를 재미있고 책임감 있게 즐기기 위한 팁과 주의사항을 확인하세요.{% endblock %}
+{% block keywords %}로또 팁, 로또 구매 요령, 책임감 있는 로또{% endblock %}
+
+{% block canonical_url %}https://hmyun.pythonanywhere.com/lottery/tips/{% endblock %}
+
+{% block extra_meta %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "책임감 있는 로또 구매 가이드",
+  "totalTime": "PT5M",
+  "step": [
+    {"@type":"HowToStep","name":"예산 정하기","text":"월 예산 범위에서 즐기기"},
+    {"@type":"HowToStep","name":"무리하지 않기","text":"생활비로 구매하지 않기"}
+  ]
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-header"><i class="fas fa-lightbulb"></i> 로또 구매 팁</div>
+  <div class="card-body">
+    <ul>
+      <li>균형 잡힌 번호 선택(홀짝/고저 균형)</li>
+      <li>연속 번호 과신 금지</li>
+      <li>예산 내에서 재미로 즐기기</li>
+      <li>과거 통계는 참고만</li>
+    </ul>
+  </div>
+</div>
+{% endblock %}
+
+

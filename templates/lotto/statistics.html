@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}로또 번호 통계 | 자주 나온 번호/보너스 분석{% endblock %}
+{% block description %}최근 회차 기준 로또 번호 출현 빈도와 보너스 번호 통계를 확인하세요.{% endblock %}
+{% block keywords %}로또 번호 통계, 로또 자주 나온 번호, 로또 보너스 통계{% endblock %}
+
+{% block canonical_url %}https://hmyun.pythonanywhere.com/lottery/stats/{% endblock %}
+
+{% block extra_meta %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "로또 번호 통계",
+  "url": "https://hmyun.pythonanywhere.com/lottery/stats/"
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-header"><i class="fas fa-chart-line"></i> 로또 번호 통계</div>
+  <div class="card-body">
+    <div class="mb-3">
+      <div class="btn-group" role="group">
+        <button class="btn btn-info rounds" data-rounds="10">10회</button>
+        <button class="btn btn-info rounds" data-rounds="30">30회</button>
+        <button class="btn btn-info rounds" data-rounds="50">50회</button>
+      </div>
+    </div>
+    <div id="statsContent"></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function renderStats(data){
+  if (!data || data.error) {
+    document.getElementById('statsContent').innerHTML = '<div class="alert alert-danger">데이터를 불러올 수 없습니다.</div>';
+    return;
+  }
+  const numHtml = (data.number_frequency || []).slice(0, 15).map(([n,c])=>`<span class="badge bg-secondary me-2 mb-2">${n} <small class="ms-1">(${c})</small></span>`).join('');
+  const bonusHtml = (data.bonus_frequency || []).slice(0, 5).map(([n,c])=>`<span class="badge bg-danger me-2 mb-2">${n} <small class="ms-1">(${c})</small></span>`).join('');
+  document.getElementById('statsContent').innerHTML = `
+    <h5 class="mb-2">자주 나온 번호</h5>
+    <div class="mb-3">${numHtml}</div>
+    <h5 class="mb-2">자주 나온 보너스 번호</h5>
+    <div>${bonusHtml}</div>`;
+}
+function load(rounds){
+  document.getElementById('statsContent').innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin"></i> 불러오는 중...</div>';
+  fetch(`/lottery/statistics?rounds=${rounds}`)
+    .then(r=>r.json())
+    .then(renderStats)
+    .catch(()=>{ document.getElementById('statsContent').innerHTML = '<div class="alert alert-danger">오류가 발생했습니다.</div>'; });
+}
+document.addEventListener('DOMContentLoaded', function(){
+  document.querySelectorAll('.rounds').forEach(btn=>btn.addEventListener('click',()=>load(btn.dataset.rounds)));
+  load(10);
+});
+</script>
+{% endblock %}
+
+

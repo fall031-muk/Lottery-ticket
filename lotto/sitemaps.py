@@ -12,7 +12,7 @@ class StaticViewSitemap(Sitemap):
     
     def items(self):
         # home만 사용하고 lotto_main 중복 제거
-        return ['home', 'about', 'privacy', 'terms']
+        return ['home', 'about', 'privacy', 'terms', 'history', 'stats_page', 'calculator']
     
     def location(self, item):
         return reverse(item)
