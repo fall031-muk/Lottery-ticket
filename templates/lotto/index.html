@@ -175,7 +175,7 @@
                             <label class="btn btn-outline-primary" for="randomMode">
                                 <i class="fas fa-dice"></i> 완전 랜덤
                             </label>
-                            
+
                             <input type="radio" class="btn-check" name="generationMode" id="smartMode" value="smart">
                             <label class="btn btn-outline-warning" for="smartMode">
                                 <i class="fas fa-brain"></i> 통계 기반
@@ -185,6 +185,35 @@
                             <small id="modeDescription">
                                 <strong>완전 랜덤:</strong> 1부터 45까지 완전히 무작위로 선택
                             </small>
+                        </div>
+                    </div>
+
+                    <!-- 생성 개수 선택 -->
+                    <div class="mb-3">
+                        <label class="form-label">생성할 번호 개수</label>
+                        <div class="btn-group w-100" role="group" aria-label="생성 개수 선택">
+                            <input type="radio" class="btn-check" name="generateCount" id="count1" value="1" checked>
+                            <label class="btn btn-outline-success" for="count1">
+                                1개
+                            </label>
+
+                            <input type="radio" class="btn-check" name="generateCount" id="count3" value="3">
+                            <label class="btn btn-outline-success" for="count3">
+                                3개
+                            </label>
+
+                            <input type="radio" class="btn-check" name="generateCount" id="count5" value="5">
+                            <label class="btn btn-outline-success" for="count5">
+                                5개
+                            </label>
+
+                            <input type="radio" class="btn-check" name="generateCount" id="count10" value="10">
+                            <label class="btn btn-outline-success" for="count10">
+                                10개
+                            </label>
+                        </div>
+                        <div class="form-text mt-2">
+                            <small>한 번에 생성할 로또 번호 세트의 개수를 선택하세요</small>
                         </div>
                     </div>
                     
@@ -794,50 +823,75 @@
         function generateLottoNumbers() {
             $("#lottoResult").empty();
             $(".loading").show();
-            
+
             // 사용자가 입력한 제외할 번호 처리
             const excludeNumbersInput = $("#excludeNumbers").val().trim();
             let excludeNumbers = [];
             if (excludeNumbersInput) {
                 excludeNumbers = excludeNumbersInput.split(',').map(num => parseInt(num.trim())).filter(num => !isNaN(num) && num >= 1 && num <= 45);
             }
-            
+
             // 선택된 생성 모드 가져오기
             const generationMode = $('input[name="generationMode"]:checked').val();
-            
+
+            // 선택된 생성 개수 가져오기
+            const generateCount = $('input[name="generateCount"]:checked').val();
+
             // 서버 API 호출
-            const apiUrl = `/lottery/numbers?exclude_numbers=${excludeNumbers.join(',')}&mode=${generationMode}`;
-            
+            const apiUrl = `/lottery/numbers?exclude_numbers=${excludeNumbers.join(',')}&mode=${generationMode}&count=${generateCount}`;
+
             fetch(apiUrl)
                 .then(response => response.json())
                 .then(data => {
-                    let numbers;
+                    let numberSets;
                     let info = '';
-                    
+
                     // 응답 형식에 따라 처리
-                    if (data.numbers) {
-                        numbers = data.numbers;
+                    if (data.number_sets) {
+                        // 새로운 형식 (여러 개 지원)
+                        numberSets = data.number_sets;
+                        info = data.info || '';
+                    } else if (data.numbers) {
+                        // 이전 형식 (단일 세트)
+                        numberSets = [data.numbers];
                         info = data.info || '';
                     } else {
-                        // 이전 형식 지원 (배열 직접 반환)
-                        numbers = data;
+                        // 배열 직접 반환 (가장 오래된 형식)
+                        numberSets = [data];
                     }
-                    
-                    // 결과 표시
-                    numbers.forEach((number, index) => {
-                        // 번호 등장에 약간의 애니메이션 효과를 주기 위한 지연
-                        setTimeout(() => {
-                            $("#lottoResult").append(getBallHTML(number));
-                        }, index * 300);
+
+                    // 여러 번호 세트 표시
+                    numberSets.forEach((numbers, setIndex) => {
+                        // 각 세트를 감싸는 div 생성
+                        const setDiv = $('<div class="mb-4"></div>');
+
+                        // 세트가 2개 이상일 때만 세트 번호 표시
+                        if (numberSets.length > 1) {
+                            setDiv.append(`<div class="mb-2"><strong>${setIndex + 1}번째 세트</strong></div>`);
+                        }
+
+                        // 번호들을 담을 컨테이너
+                        const numbersContainer = $('<div class="d-flex flex-wrap justify-content-center mb-2"></div>');
+
+                        // 각 번호를 순차적으로 표시
+                        numbers.forEach((number, index) => {
+                            setTimeout(() => {
+                                numbersContainer.append(getBallHTML(number));
+                            }, (setIndex * 1800) + (index * 300)); // 세트별로 시간차를 두고 표시
+                        });
+
+                        setDiv.append(numbersContainer);
+                        $("#lottoResult").append(setDiv);
                     });
-                    
+
                     // 정보 메시지 표시
                     if (info) {
+                        const totalDelay = (numberSets.length * 1800) + 200;
                         setTimeout(() => {
                             $("#lottoResult").append(`<div class="mt-3"><small class="text-muted"><i class="fas fa-info-circle"></i> ${info}</small></div>`);
-                        }, numbers.length * 300 + 200);
+                        }, totalDelay);
                     }
-                    
+
                     $(".loading").hide();
                 })
                 .catch(error => {

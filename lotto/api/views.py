@@ -269,7 +269,17 @@ class GetLottoNumber(APIView):
     def get(self, request):
         exclude_numbers = request.GET.get('exclude_numbers', '')
         generation_mode = request.GET.get('mode', 'random')  # 'random' 또는 'smart'
-        
+        count = request.GET.get('count', '1')  # 생성할 번호 세트 개수 (기본값: 1)
+
+        # 생성 개수 처리
+        try:
+            count = int(count)
+            # 1, 3, 5, 10만 허용
+            if count not in [1, 3, 5, 10]:
+                count = 1  # 기본값
+        except ValueError:
+            count = 1
+
         # 제외할 번호 처리
         exclude_numbers_list = []
         if exclude_numbers:
@@ -279,48 +289,54 @@ class GetLottoNumber(APIView):
                 exclude_numbers_list = [num for num in exclude_numbers_list if 1 <= num <= 45]
             except ValueError:
                 pass
-        
+
         # 중복 제거
         exclude_numbers_list = list(set(exclude_numbers_list))
-        
+
         # 사용 가능한 번호 목록 생성
         available_numbers = [i for i in range(1, 46) if i not in exclude_numbers_list]
-        
+
         # 번호 추첨
         if len(available_numbers) < 6:
             return Response({"error": "제외할 번호가 너무 많습니다."}, status=400)
-        
-        # 생성 모드에 따라 다른 로직 적용
-        if generation_mode == 'smart':
-            try:
-                selected_numbers = generate_smart_numbers(exclude_numbers_list)
-                if len(selected_numbers) < 6:
+
+        # 여러 개의 번호 세트 생성
+        all_number_sets = []
+
+        for i in range(count):
+            # 생성 모드에 따라 다른 로직 적용
+            if generation_mode == 'smart':
+                try:
+                    selected_numbers = generate_smart_numbers(exclude_numbers_list)
+                    if len(selected_numbers) < 6:
+                        # 스마트 생성 실패 시 랜덤으로 폴백
+                        selected_numbers = random.sample(available_numbers, 6)
+                        selected_numbers.sort()
+                    all_number_sets.append(selected_numbers)
+                except Exception as e:
                     # 스마트 생성 실패 시 랜덤으로 폴백
                     selected_numbers = random.sample(available_numbers, 6)
                     selected_numbers.sort()
-                return Response({
-                    "numbers": selected_numbers,
-                    "mode": "smart",
-                    "info": "통계 기반으로 생성된 번호입니다"
-                })
-            except Exception as e:
-                # 스마트 생성 실패 시 랜덤으로 폴백
+                    all_number_sets.append(selected_numbers)
+            else:
+                # 기본 랜덤 생성
                 selected_numbers = random.sample(available_numbers, 6)
                 selected_numbers.sort()
-                return Response({
-                    "numbers": selected_numbers,
-                    "mode": "random",
-                    "info": "스마트 생성 실패로 랜덤 생성되었습니다"
-                })
+                all_number_sets.append(selected_numbers)
+
+        # 응답 구성
+        info_message = ""
+        if generation_mode == 'smart':
+            info_message = f"통계 기반으로 생성된 {count}개의 번호입니다"
         else:
-            # 기본 랜덤 생성
-            selected_numbers = random.sample(available_numbers, 6)
-            selected_numbers.sort()
-            return Response({
-                "numbers": selected_numbers,
-                "mode": "random",
-                "info": "완전 랜덤으로 생성된 번호입니다"
-            })
+            info_message = f"완전 랜덤으로 생성된 {count}개의 번호입니다"
+
+        return Response({
+            "number_sets": all_number_sets,
+            "count": count,
+            "mode": generation_mode,
+            "info": info_message
+        })
 
 
 class GetNumberStatistics(APIView):
