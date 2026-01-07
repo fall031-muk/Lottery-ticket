@@ -21,6 +21,114 @@ def load_lotto_data():
     except (FileNotFoundError, json.JSONDecodeError):
         return []
 
+
+def load_pension_data():
+    """JSON 파일에서 연금복권 데이터를 로드합니다."""
+    json_file_path = os.path.join(settings.BASE_DIR, 'pension_num.json')
+    try:
+        with open(json_file_path, 'r', encoding='utf-8') as file:
+            return json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+
+
+def get_pension_stats(window=100):
+    """
+    연금복권 당첨 데이터 통계 계산
+    - 조 빈도, 각 자리수 빈도, 보너스 빈도
+    """
+    data = load_pension_data()
+    recent = data[:window] if data else []
+    if not recent:
+        return None
+
+    group_freq = {}
+    pos_freq = [dict() for _ in range(6)]  # 6자리
+    bonus_freq = {}
+
+    for entry in recent:
+        group_freq[entry['group']] = group_freq.get(entry['group'], 0) + 1
+        num_str = str(entry['number']).zfill(6)
+        for idx, ch in enumerate(num_str):
+            pos_freq[idx][ch] = pos_freq[idx].get(ch, 0) + 1
+        bonus_str = str(entry.get('bonus', '')).zfill(6)
+        if bonus_str:
+            bonus_freq[bonus_str] = bonus_freq.get(bonus_str, 0) + 1
+
+    return {
+        'group_freq': group_freq,
+        'pos_freq': pos_freq,
+        'bonus_freq': bonus_freq,
+        'total': len(recent)
+    }
+
+
+def _pick_from_freq(freq_map, prefer='hot'):
+    """freq_map: dict(str->count). prefer hot or cold."""
+    if not freq_map:
+        return str(random.randint(0, 9))
+    items = sorted(freq_map.items(), key=lambda x: x[1], reverse=True)
+    if prefer == 'hot':
+        top = items[:min(3, len(items))]
+    elif prefer == 'cold':
+        top = items[-min(3, len(items)):]
+    else:
+        top = items
+    choices = [k for k, _ in top]
+    return random.choice(choices)
+
+
+def generate_pension_number(count=1, mode="random", stats=None):
+    """
+    연금복권 번호 생성 (조 1~5, 번호 000000~999999)
+    mode: random | hot | cold | balanced
+    """
+    results = []
+    stats = stats or get_pension_stats(window=100)
+
+    # group 선택 기준
+    group_hot = None
+    group_cold = None
+    if stats and stats.get('group_freq'):
+        sorted_groups = sorted(stats['group_freq'].items(), key=lambda x: x[1], reverse=True)
+        group_hot = sorted_groups[0][0]
+        group_cold = sorted_groups[-1][0]
+
+    for _ in range(count):
+        # 그룹 선택
+        if mode == "hot" and group_hot:
+            group = group_hot
+        elif mode == "cold" and group_cold:
+            group = group_cold
+        elif mode == "balanced" and group_hot and group_cold:
+            group = random.choice([group_hot, group_cold])
+        else:
+            group = random.randint(1, 5)
+
+        # 번호 6자리 생성
+        digits = []
+        for idx in range(6):
+            if stats and stats.get('pos_freq'):
+                prefer = "hot" if mode == "hot" else "cold" if mode == "cold" else None
+                digit = _pick_from_freq(stats['pos_freq'][idx], prefer=prefer)
+            else:
+                digit = str(random.randint(0, 9))
+            digits.append(digit)
+
+        # 균형 모드는 앞자리/뒷자리 핫/콜드 섞기
+        if mode == "balanced" and stats and stats.get('pos_freq'):
+            for idx in range(6):
+                prefer = "hot" if idx < 3 else "cold"
+                digits[idx] = _pick_from_freq(stats['pos_freq'][idx], prefer=prefer)
+
+        number = "".join(digits)
+        results.append({
+            'group': group,
+            'number': number
+        })
+
+    return results
+
 def get_recent_draws(count=5):
     """최근 N회차의 당첨번호를 가져옵니다."""
     data = load_lotto_data()
@@ -623,6 +731,54 @@ class GetNumberAnalysis(APIView):
         }
 
         return Response(result, status=status.HTTP_200_OK)
+
+
+class GetPensionNumber(APIView):
+    """
+    연금복권 번호를 생성하는 API 뷰
+    """
+    def get(self, request):
+        count = request.GET.get('count', '1')
+        mode = request.GET.get('mode', 'random')  # random/hot/cold/balanced
+
+        # 생성 개수 처리
+        try:
+            count = int(count)
+            if count not in [1, 3, 5, 10]:
+                count = 1
+        except ValueError:
+            count = 1
+
+        stats = get_pension_stats(window=100)
+
+        # 연금복권 번호 생성
+        pension_numbers = generate_pension_number(count, mode=mode, stats=stats)
+
+        return Response({
+            "pension_numbers": pension_numbers,
+            "count": count,
+            "mode": mode,
+            "info": f"{mode} 모드로 생성된 {count}개의 연금복권 번호입니다",
+            "stats_total": stats['total'] if stats else 0
+        })
+
+
+class PensionMainView(APIView):
+    """
+    연금복권 메인 페이지를 렌더링하는 뷰
+    """
+    def get(self, request):
+        # JSON 파일에서 최신 당첨번호 가져오기
+        pension_data = load_pension_data()
+        latest_pension = pension_data[0] if pension_data else None
+        recent_pensions = pension_data[:10] if pension_data else []
+
+        context = {
+            'latest_pension': latest_pension,
+            'recent_pensions': recent_pensions,
+        }
+
+        return render(request, 'lotto/pension.html', context)
 
 
 class GetDrawInfo(APIView):

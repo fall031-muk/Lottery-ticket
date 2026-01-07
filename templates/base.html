@@ -103,6 +103,56 @@
             color: var(--primary-color);
             font-weight: 700;
         }
+
+        /* 로또/연금복권 탭 스타일 */
+        .lottery-type-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .lottery-tab {
+            padding: 15px 30px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #666;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .lottery-tab:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .lottery-tab.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .lottery-tab.pension-tab {
+            border-color: #28a745;
+        }
+
+        .lottery-tab.pension-tab:hover {
+            border-color: #28a745;
+            color: #28a745;
+        }
+
+        .lottery-tab.pension-tab.active {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
         
         .card {
             border-radius: 15px;
@@ -212,29 +262,41 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1><i class="fas fa-ticket-alt"></i> 로또 번호 추첨기</h1>
+            <h1><i class="fas fa-ticket-alt"></i> 로또 & 연금복권 번호 생성기</h1>
             <p class="text-muted">행운의 번호를 뽑아보세요!</p>
+
+            <!-- 로또/연금복권 탭 -->
+            <div class="lottery-type-tabs mb-3">
+                <a href="{% url 'lotto_main' %}" class="lottery-tab {% if request.path == '/' %}active{% endif %}">
+                    <i class="fas fa-dice"></i> 로또 6/45
+                </a>
+                <a href="{% url 'pension_main' %}" class="lottery-tab pension-tab {% if 'pension' in request.path %}active{% endif %}">
+                    <i class="fas fa-wallet"></i> 연금복권 720+
+                    <span class="badge bg-danger ms-1">NEW</span>
+                </a>
+            </div>
+
             <nav class="mt-3">
-                <a href="{% url 'lotto_main' %}" class="btn btn-outline-primary me-2">
+                <a href="{% url 'lotto_main' %}" class="btn btn-outline-primary me-2 mb-2">
                     <i class="fas fa-home"></i> 홈
                 </a>
-                <a href="{% url 'about' %}" class="btn btn-outline-secondary me-2">
+                <a href="{% url 'about' %}" class="btn btn-outline-secondary me-2 mb-2">
                     <i class="fas fa-info-circle"></i> 사이트 소개
                 </a>
-                <a href="{% url 'history' %}" class="btn btn-outline-secondary me-2">
+                <a href="{% url 'history' %}" class="btn btn-outline-secondary me-2 mb-2">
                     <i class="fas fa-history"></i> 이력
                 </a>
-                <a href="{% url 'stats_page' %}" class="btn btn-outline-secondary me-2">
+                <a href="{% url 'stats_page' %}" class="btn btn-outline-secondary me-2 mb-2">
                     <i class="fas fa-chart-line"></i> 통계
                 </a>
-                <a href="{% url 'calculator' %}" class="btn btn-outline-secondary me-2">
+                <a href="{% url 'calculator' %}" class="btn btn-outline-secondary me-2 mb-2">
                     <i class="fas fa-calculator"></i> 확률 계산기
                 </a>
                 {# 팁/뉴스는 컨텐츠 준비 후 오픈 #}
-                <a href="{% url 'privacy' %}" class="btn btn-outline-success me-2">
+                <a href="{% url 'privacy' %}" class="btn btn-outline-success me-2 mb-2">
                     <i class="fas fa-shield-alt"></i> 개인정보처리방침
                 </a>
-                <a href="{% url 'terms' %}" class="btn btn-outline-warning">
+                <a href="{% url 'terms' %}" class="btn btn-outline-warning mb-2">
                     <i class="fas fa-file-contract"></i> 이용약관
                 </a>
             </nav>

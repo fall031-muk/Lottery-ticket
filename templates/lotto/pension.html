@@ -1,0 +1,368 @@
+{% extends 'base.html' %}
+
+{% block title %}💰 연금복권 720+ 번호 생성기 | 무료 추첨 | {{ latest_pension.round|default:"최신" }}회 당첨번호{% endblock %}
+
+{% block description %}🎯 2025년 최신 연금복권 720+ 번호 생성기! 조-번호-회차를 자동 생성하여 행운의 번호를 만드세요. {{ latest_pension.round|default:"최신" }}회 당첨번호 확인, 역대 당첨 기록까지 모든 기능 무료 제공!{% endblock %}
+
+{% block content %}
+<main class="container">
+    <article class="row">
+        <div class="col-lg-8 mx-auto">
+            <header class="mb-4">
+                <h1 class="text-center">💰 연금복권 720+ 번호 생성기</h1>
+                <p class="lead text-center">🏆 월 700만원! 20년간 연금처럼 받는 연금복권 번호를 생성해보세요!</p>
+                <div class="alert alert-info text-center">
+                    <small><strong>🔔 안내:</strong> 본 사이트는 교육 및 오락 목적의 번호 생성 도구입니다. 실제 당첨을 보장하지 않습니다.</small>
+                </div>
+            </header>
+
+            <!-- 번호 추첨 카드 -->
+            <section class="card mb-4">
+                <div class="card-header">
+                    <h2 style="margin: 0; font-size: 1.25rem;"><i class="fas fa-random"></i> 연금복권 번호 추첨</h2>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">버튼을 클릭하면 연금복권 번호가 생성됩니다. (조-번호)</p>
+
+                    <!-- 생성 개수 선택 -->
+                    <div class="mb-3">
+                        <label class="form-label">생성할 번호 개수</label>
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" name="pensionCount" id="pCount1" value="1" checked>
+                            <label class="btn btn-outline-success" for="pCount1">1개</label>
+
+                            <input type="radio" class="btn-check" name="pensionCount" id="pCount3" value="3">
+                            <label class="btn btn-outline-success" for="pCount3">3개</label>
+
+                            <input type="radio" class="btn-check" name="pensionCount" id="pCount5" value="5">
+                            <label class="btn btn-outline-success" for="pCount5">5개</label>
+
+                            <input type="radio" class="btn-check" name="pensionCount" id="pCount10" value="10">
+                            <label class="btn btn-outline-success" for="pCount10">10개</label>
+                        </div>
+                    </div>
+
+                    <!-- 생성 모드 선택 -->
+                    <div class="mb-3">
+                        <label class="form-label">생성 모드</label>
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" name="pensionMode" id="pModeRandom" value="random" checked>
+                            <label class="btn btn-outline-primary" for="pModeRandom">랜덤</label>
+
+                            <input type="radio" class="btn-check" name="pensionMode" id="pModeHot" value="hot">
+                            <label class="btn btn-outline-danger" for="pModeHot">핫(많이 나온)</label>
+
+                            <input type="radio" class="btn-check" name="pensionMode" id="pModeCold" value="cold">
+                            <label class="btn btn-outline-secondary" for="pModeCold">콜드(덜 나온)</label>
+
+                            <input type="radio" class="btn-check" name="pensionMode" id="pModeBalanced" value="balanced">
+                            <label class="btn btn-outline-success" for="pModeBalanced">균형</label>
+                        </div>
+                    </div>
+
+                    <button id="generatePensionBtn" class="btn btn-primary btn-lg w-100">
+                        <i class="fas fa-sync-alt"></i> 연금복권 번호 추첨하기
+                    </button>
+
+                    <div class="loading" style="display: none; text-align: center; padding: 20px;">
+                        <i class="fas fa-spinner fa-spin fa-2x"></i>
+                        <p>추첨 중...</p>
+                    </div>
+
+                    <div id="pensionResult" class="mt-4" style="min-height: 80px;">
+                        <!-- 추첨된 번호가 여기에 표시됩니다 -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- 최신 당첨번호 -->
+            {% if latest_pension %}
+            <section class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h2 style="margin: 0; font-size: 1.25rem;"><i class="fas fa-trophy"></i> {{ latest_pension.round }}회 연금복권 당첨번호 - {{ latest_pension.date }}</h2>
+                </div>
+                <div class="card-body text-center">
+                    <div class="pension-number-display">
+                        <div class="pension-group">
+                            <span class="label">조</span>
+                            <span class="value">{{ latest_pension.group }}</span>
+                        </div>
+                        <div class="pension-main-number">
+                            <span class="label">번호</span>
+                            <span class="value">{{ latest_pension.number }}</span>
+                        </div>
+                        <div class="pension-bonus">
+                            <span class="label">보너스 번호</span>
+                            <span class="value">{{ latest_pension.bonus }}</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            {% endif %}
+
+            <!-- 최근 당첨번호 이력 -->
+            <section class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-history"></i> 최근 당첨번호 이력
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>회차</th>
+                                    <th>추첨일</th>
+                                    <th>조</th>
+                                    <th>번호</th>
+                                    <th>보너스 번호</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for pension in recent_pensions %}
+                                <tr>
+                                    <td><strong>{{ pension.round }}회</strong></td>
+                                    <td>{{ pension.date }}</td>
+                                    <td><span class="badge bg-primary">{{ pension.group }}조</span></td>
+                                    <td><span class="pension-number-small">{{ pension.number }}</span></td>
+                                    <td><span class="badge bg-warning text-dark">{{ pension.bonus }}</span></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 연금복권 정보 -->
+            <section class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-info-circle"></i> 연금복권 720+ 정보
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h3><i class="fas fa-trophy"></i> 당첨 등급</h3>
+                            <div class="table-responsive">
+                                <table class="table table-sm table-bordered">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>등수</th>
+                                            <th>당첨 조건</th>
+                                            <th>당첨금</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1등</td>
+                                            <td>조+번호+회차</td>
+                                            <td>월 700만원 (20년)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>2등</td>
+                                            <td>조+번호</td>
+                                            <td>월 100만원 (10년)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>3등</td>
+                                            <td>번호+회차</td>
+                                            <td>100만원</td>
+                                        </tr>
+                                        <tr>
+                                            <td>4등</td>
+                                            <td>번호</td>
+                                            <td>10만원</td>
+                                        </tr>
+                                        <tr>
+                                            <td>5등</td>
+                                            <td>조+회차</td>
+                                            <td>5만원</td>
+                                        </tr>
+                                        <tr>
+                                            <td>6등</td>
+                                            <td>회차</td>
+                                            <td>5천원</td>
+                                        </tr>
+                                        <tr>
+                                            <td>7등</td>
+                                            <td>조</td>
+                                            <td>1천원</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h3><i class="fas fa-calculator"></i> 1등 총 수령액</h3>
+                            <div class="alert alert-success">
+                                <h4 class="text-center">16억 8천만원</h4>
+                                <p class="text-center mb-0">
+                                    <small>월 700만원 × 20년 (240개월)</small>
+                                </p>
+                            </div>
+
+                            <h3 class="mt-4"><i class="fas fa-shopping-cart"></i> 구매 방법</h3>
+                            <ul>
+                                <li>전국 로또 판매점에서 구매 가능</li>
+                                <li>1장당 1,000원 (5게임)</li>
+                                <li>매주 목요일 추첨</li>
+                                <li>동행복권 앱에서 온라인 구매 가능</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </article>
+</main>
+
+<style>
+.pension-number-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    padding: 30px;
+    font-size: 1.5rem;
+}
+
+.pension-group, .pension-main-number, .pension-bonus {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.pension-number-display .label {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.pension-number-display .value {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #28a745;
+    font-family: 'Courier New', monospace;
+}
+
+.pension-group .value {
+    color: #007bff;
+}
+
+.pension-bonus .value {
+    color: #ffc107;
+}
+
+.pension-number-small {
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #28a745;
+}
+
+.generated-pension {
+    background: #f8f9fa;
+    border: 2px solid #28a745;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 15px;
+}
+
+.generated-pension .pension-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    font-family: 'Courier New', monospace;
+}
+
+.generated-pension .group {
+    background: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.generated-pension .number {
+    background: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1.8rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.generated-pension .bonus {
+    background: #ffc107;
+    color: #333;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+</style>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function() {
+        // 연금복권 번호 생성 버튼 클릭
+        $("#generatePensionBtn").click(function() {
+            generatePensionNumbers();
+        });
+
+        function generatePensionNumbers() {
+            $("#pensionResult").empty();
+            $(".loading").show();
+
+            const count = $('input[name="pensionCount"]:checked').val();
+                const mode = $('input[name="pensionMode"]:checked').val();
+                const apiUrl = `/lottery/pension/numbers?count=${count}&mode=${mode}`;
+
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    let html = '';
+
+                    data.pension_numbers.forEach((pension, index) => {
+                        html += `
+                            <div class="generated-pension" style="animation: fadeIn 0.5s ease-in ${index * 0.2}s both;">
+                                ${data.pension_numbers.length > 1 ? `<div class="text-center mb-2"><strong>${index + 1}번째 번호</strong></div>` : ''}
+                                <div class="pension-display">
+                                    <div class="group">${pension.group}조</div>
+                                    <div class="number">${pension.number}</div>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    html += `<div class="text-center mt-3"><small class="text-muted"><i class="fas fa-info-circle"></i> ${data.info}</small></div>`;
+
+                    $("#pensionResult").html(html);
+                    $(".loading").hide();
+                })
+                .catch(error => {
+                    $("#pensionResult").html('<div class="alert alert-danger">번호 생성 중 오류가 발생했습니다.</div>');
+                    $(".loading").hide();
+                    console.error("API 호출 오류:", error);
+                });
+        }
+    });
+</script>
+
+<style>
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
+{% endblock %}
